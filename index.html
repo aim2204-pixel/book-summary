@@ -1284,16 +1284,15 @@
         });
 
         // ======================================================================
-        // 16. SERVICE WORKER
-        // ======================================================================
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js', { scope: '/' })
-                .then(() => console.log('✅ SW зарегистрирован успешно'))
-                .catch((err) => console.log('❌ Ошибка регистрации SW:', err));
-        } else {
-            console.log('❌ Service Worker не поддерживается');
-        }
-
+// 16. SERVICE WORKER (с правильным scope для подпапки)
+// ======================================================================
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js', { scope: '/book-summary/' })
+        .then(() => console.log('✅ SW зарегистрирован успешно'))
+        .catch((err) => console.log('❌ Ошибка регистрации SW:', err));
+} else {
+    console.log('❌ Service Worker не поддерживается');
+}
         console.log('📚 Конспекты книг — PWA обновлён!');
     </script>
 </body>
