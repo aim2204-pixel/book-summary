@@ -1,5 +1,10 @@
 const CACHE_NAME = 'conspects-v1';
-const ASSETS = ['/', '/index.html', '/manifest.json', '/icon.svg'];
+const ASSETS = [
+  '/book-summary/',
+  '/book-summary/index.html',
+  '/book-summary/manifest.json',
+  '/book-summary/icon.svg'
+];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(
