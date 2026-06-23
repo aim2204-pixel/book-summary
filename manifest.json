@@ -1,0 +1,17 @@
+{
+  "name": "Конспекты книг",
+  "short_name": "Книги",
+  "description": "Хранилище конспектов книг по саморазвитию",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8f6f0",
+  "theme_color": "#4a7a9c",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

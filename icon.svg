@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="60" fill="#f8f6f0"/>
+  <rect x="100" y="100" width="312" height="280" rx="8" fill="#4a7a9c" stroke="#3a5a7a" stroke-width="4"/>
+  <line x1="256" y1="100" x2="256" y2="380" stroke="#3a5a7a" stroke-width="3"/>
+  <line x1="120" y1="140" x2="392" y2="140" stroke="#3a5a7a" stroke-width="2" opacity="0.5"/>
+  <line x1="120" y1="170" x2="392" y2="170" stroke="#3a5a7a" stroke-width="2" opacity="0.5"/>
+  <line x1="120" y1="200" x2="392" y2="200" stroke="#3a5a7a" stroke-width="2" opacity="0.5"/>
+  <line x1="120" y1="230" x2="392" y2="230" stroke="#3a5a7a" stroke-width="2" opacity="0.5"/>
+  <line x1="120" y1="260" x2="392" y2="260" stroke="#3a5a7a" stroke-width="2" opacity="0.5"/>
+  <text x="256" y="340" font-size="80" text-anchor="middle" fill="#3a5a7a" font-family="Arial, sans-serif" font-weight="bold">К</text>
+</svg>
