@@ -2,7 +2,7 @@
   "name": "Конспекты книг",
   "short_name": "Книги",
   "description": "Хранилище конспектов книг по саморазвитию",
-  "start_url": "/",
+  "start_url": "/book-summary/",
   "display": "standalone",
   "background_color": "#f8f6f0",
   "theme_color": "#4a7a9c",
