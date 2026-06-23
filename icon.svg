@@ -1,11 +1,27 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="60" fill="#f8f6f0"/>
-  <rect x="100" y="100" width="312" height="280" rx="8" fill="#4a7a9c" stroke="#3a5a7a" stroke-width="4"/>
-  <line x1="256" y1="100" x2="256" y2="380" stroke="#3a5a7a" stroke-width="3"/>
-  <line x1="120" y1="140" x2="392" y2="140" stroke="#3a5a7a" stroke-width="2" opacity="0.5"/>
-  <line x1="120" y1="170" x2="392" y2="170" stroke="#3a5a7a" stroke-width="2" opacity="0.5"/>
-  <line x1="120" y1="200" x2="392" y2="200" stroke="#3a5a7a" stroke-width="2" opacity="0.5"/>
-  <line x1="120" y1="230" x2="392" y2="230" stroke="#3a5a7a" stroke-width="2" opacity="0.5"/>
-  <line x1="120" y1="260" x2="392" y2="260" stroke="#3a5a7a" stroke-width="2" opacity="0.5"/>
-  <text x="256" y="340" font-size="80" text-anchor="middle" fill="#3a5a7a" font-family="Arial, sans-serif" font-weight="bold">К</text>
+  <rect width="512" height="512" rx="60" fill="#4a7a9c"/>
+  
+  <!-- Тени под книгой -->
+  <path d="M100 150 L256 200 L412 150 L412 370 L256 420 L100 370 Z" fill="rgba(0,0,0,0.1)" transform="translate(0, 6)"/>
+  
+  <!-- Левая обложка -->
+  <path d="M100 140 L256 190 L256 410 L100 360 Z" fill="#3a5a7a" stroke="#2a4a6a" stroke-width="4"/>
+  <!-- Правая обложка -->
+  <path d="M412 140 L256 190 L256 410 L412 360 Z" fill="#3a5a7a" stroke="#2a4a6a" stroke-width="4"/>
+  
+  <!-- Левая страница -->
+  <path d="M112 150 L256 198 L256 402 L112 354 Z" fill="#fcf8f2" stroke="#d0c8b8" stroke-width="2"/>
+  <!-- Правая страница -->
+  <path d="M400 150 L256 198 L256 402 L400 354 Z" fill="#fcf8f2" stroke="#d0c8b8" stroke-width="2"/>
+  
+  <!-- Страницы (линии) -->
+  <path d="M118 156 L256 204 L256 396 L118 348 Z" fill="none" stroke="#e8e0d0" stroke-width="1.5" transform="translate(0, 6)"/>
+  <path d="M394 156 L256 204 L256 396 L394 348 Z" fill="none" stroke="#e8e0d0" stroke-width="1.5" transform="translate(0, 6)"/>
+  
+  <!-- Корешок -->
+  <line x1="256" y1="190" x2="256" y2="410" stroke="#2a4a6a" stroke-width="6" stroke-linecap="round"/>
+  
+  <!-- Буквы -->
+  <text x="178" y="295" font-size="96" font-family="Arial, sans-serif" font-weight="bold" fill="#4a7a9c" text-anchor="middle" dominant-baseline="central">К</text>
+  <text x="334" y="295" font-size="96" font-family="Arial, sans-serif" font-weight="bold" fill="#4a7a9c" text-anchor="middle" dominant-baseline="central">К</text>
 </svg>
