@@ -85,7 +85,7 @@
         .search-sort-row {
             display: flex;
             gap: 10px;
-            margin-bottom: 14px;
+            margin-bottom: 12px;
             flex-wrap: wrap;
         }
         .search-sort-row .search-bar {
@@ -142,6 +142,42 @@
         }
         body.dark .search-sort-row .sort-select:focus {
             border-color: #6a8aac;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .action-buttons .action-btn {
+            flex: 1;
+            padding: 10px 12px;
+            border: 2px solid #4a7a9c;
+            border-radius: 30px;
+            background: white;
+            color: #4a7a9c;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: inherit;
+            text-align: center;
+        }
+        .action-buttons .action-btn:hover {
+            background: #4a7a9c;
+            color: white;
+        }
+        .action-buttons .action-btn:active {
+            transform: scale(0.96);
+        }
+        body.dark .action-buttons .action-btn {
+            background: #2a2a30;
+            color: #6a8aac;
+            border-color: #4a6a7a;
+        }
+        body.dark .action-buttons .action-btn:hover {
+            background: #4a6a7a;
+            color: white;
         }
 
         .add-btn {
@@ -684,6 +720,8 @@
             .view-content .view-body { font-size: 0.98rem; }
             .search-sort-row { flex-direction: column; gap: 8px; }
             .search-sort-row .sort-select { min-width: 100%; }
+            .action-buttons { gap: 8px; }
+            .action-buttons .action-btn { font-size: 0.85rem; padding: 8px 10px; }
         }
     </style>
 </head>
@@ -710,6 +748,11 @@
             </select>
         </div>
 
+        <div class="action-buttons">
+            <button class="action-btn" id="instructionBtn">📖 Инструкция</button>
+            <button class="action-btn" id="promptBtn">📋 Промпт</button>
+        </div>
+
         <button class="add-btn" id="addBtn">➕ Новый конспект</button>
 
         <div id="conspectList" class="conspect-list"></div>
@@ -724,6 +767,35 @@
         </div>
     </div>
 
+    <!-- Модальное окно для инструкции -->
+    <div class="modal-overlay" id="instructionModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>📖 Инструкция</h2>
+                <button class="close-btn" id="instructionCloseBtn">✕</button>
+            </div>
+            <div class="modal-body" id="instructionBody">
+                <div style="font-size: 1.05rem; line-height: 1.8; padding: 8px 4px;">
+                    <p>Привет! 👋</p>
+                    <p>Для получения нового конспекта книги нужно сделать следующее:</p>
+                    <ol style="margin: 12px 0 12px 20px;">
+                        <li>Нажмите на кнопку <strong>«Промпт»</strong> — это скопирует инструкцию (промпт) для ИИ в буфер обмена.</li>
+                        <li>Вставьте промпт в новый чат с ИИ (DeepSeek, YandexGPT (Алиса), ChatGPT и т.д.).</li>
+                        <li><strong>Замените</strong> в скопированном тексте <strong>[ВСТАВЬТЕ НАЗВАНИЕ КНИГИ]</strong> и <strong>[ВСТАВЬТЕ АВТОРА]</strong> на реальные название и автора.</li>
+                        <li>Выберите режим с <strong>«размышлением»</strong> и <strong>«поиском»</strong> (если есть).</li>
+                        <li>Скопируйте полученный HTML-код конспекта.</li>
+                        <li>В приложении нажмите <strong>«Новый конспект»</strong>, вставьте код в поле «Текст конспекта», укажите название и автора.</li>
+                    </ol>
+                    <p style="color: #6a6a6a; font-size: 0.95rem; margin-top: 12px;">💡 <strong>P.S.</strong> Для доступа к отдельным ИИ может потребоваться учётная запись.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="instructionCloseBtn2">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Основное модальное окно (добавление/чтение) -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal">
             <div class="modal-header">
@@ -898,10 +970,8 @@
             const all = await getAllConspects();
             conspects = all;
 
-            // Обновляем счётчик
             countDisplay.textContent = conspects.length > 0 ? `(${conspects.length})` : '';
 
-            // Фильтрация
             const query = filter.toLowerCase().trim();
             let filtered = conspects;
             if (query) {
@@ -911,7 +981,6 @@
                 );
             }
 
-            // Сортировка
             const sorted = sortConspects(filtered, sortKey);
 
             if (sorted.length === 0) {
@@ -938,7 +1007,6 @@
                 </div>
             `).join('');
 
-            // Клик по карточке — открыть просмотр
             list.querySelectorAll('.conspect-card').forEach(el => {
                 el.addEventListener('click', (e) => {
                     if (e.target.closest('.card-actions')) return;
@@ -947,7 +1015,6 @@
                 });
             });
 
-            // Кнопка редактирования
             list.querySelectorAll('.edit-btn').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
                     e.stopPropagation();
@@ -958,7 +1025,6 @@
                 });
             });
 
-            // Кнопка удаления
             list.querySelectorAll('.delete-btn').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
                     e.stopPropagation();
@@ -1249,12 +1315,10 @@
             const searchInput = document.getElementById('searchInput');
             const sortSelect = document.getElementById('sortSelect');
 
-            // Поиск
             searchInput.addEventListener('input', () => {
                 renderList(searchInput.value, sortSelect.value);
             });
 
-            // Сортировка
             sortSelect.addEventListener('change', () => {
                 renderList(searchInput.value, sortSelect.value);
             });
@@ -1284,15 +1348,96 @@
         });
 
         // ======================================================================
-// 16. SERVICE WORKER (с правильным scope для подпапки)
-// ======================================================================
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js', { scope: '/book-summary/' })
-        .then(() => console.log('✅ SW зарегистрирован успешно'))
-        .catch((err) => console.log('❌ Ошибка регистрации SW:', err));
-} else {
-    console.log('❌ Service Worker не поддерживается');
-}
+        // 16. ИНСТРУКЦИЯ И ПРОМПТ
+        // ======================================================================
+
+        // Открытие инструкции
+        document.getElementById('instructionBtn').addEventListener('click', () => {
+            document.getElementById('instructionModal').classList.add('active');
+        });
+
+        // Закрытие инструкции (крестик и кнопка)
+        document.getElementById('instructionCloseBtn').addEventListener('click', () => {
+            document.getElementById('instructionModal').classList.remove('active');
+        });
+        document.getElementById('instructionCloseBtn2').addEventListener('click', () => {
+            document.getElementById('instructionModal').classList.remove('active');
+        });
+
+        // Закрытие инструкции по клику на фон
+        document.getElementById('instructionModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                document.getElementById('instructionModal').classList.remove('active');
+            }
+        });
+
+        // Копирование промпта (полный текст)
+        document.getElementById('promptBtn').addEventListener('click', () => {
+            const promptText = `Книга: [ВСТАВЬТЕ НАЗВАНИЕ КНИГИ]
+        Автор: [ВСТАВЬТЕ АВТОРА]
+
+        Задача:
+        1. Составь подробный структурированный конспект этой книги, выделив все ключевые идеи, модели, навыки (если они есть), принципы и практические рекомендации. Объём — не более 10 печатных страниц (примерно 20–25 тысяч знаков с пробелами). Структура должна включать:
+           - Введение (о чём книга, основная философия автора, важность темы).
+           - Основную часть (разбить по главам или логическим блокам, каждый блок с заголовком, с выделением сути, ключевых тезисов, примеров, если они важны).
+           - Заключение (общий вывод, главная мысль, призыв к действию).
+           - В конце — краткий свод ключевых тезисов (как «шпаргалка»).
+
+        2. После текста конспекта создай (только после моего отдельного подтверждения!) самодостаточный HTML-документ, который полностью воспроизводит этот конспект с красивым оформлением, пригодным для чтения в браузере. Требования к HTML:
+           - Используй шрифт семейства Georgia или аналогичный (засечный) для основного текста, размер 16–18px, комфортный межстрочный интервал.
+           - Заголовки разных уровней (h1, h2, h3) с чёткими стилями (цвет, отступы, подчёркивания или боковые линии).
+           - Используй списки (нумерованные и маркированные) для перечисления пунктов, навыков, шагов.
+           - Цитаты выделяй блоком с отступом, фоном и курсивом.
+           - Важные термины или ключевые слова выделяй жирным или цветом.
+           - Добавь разделители между крупными частями (горизонтальные линии или отступы).
+           - Обеспечь адаптивность (при ширине экрана до 600px — уменьшай отступы и размер шрифта).
+           - В HTML-коде не должно быть внешних зависимостей (стили внутри тега <style>), чтобы документ открывался локально.
+           - Внизу страницы размести итоговую цитату (если есть) или обобщающую фразу.
+
+        3. Следуй принципам, которые использовал Стивен Кови в «7 навыках»: выделяй не просто техники, а фундаментальные принципы и изменения характера. Постарайся передать дух книги, а не просто перечислить пункты.
+
+        Важно: не добавляй лишней воды, строго придерживайся содержания книги. Если книга содержит конкретные упражнения или вопросы для рефлексии — включи их кратко.
+
+        Важно: опирайся только на первоисточник, не придумывай. Если какая-то информация не доступна, прямо сообщи об этом.`;
+
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(promptText).then(() => {
+                    showToast('✅ Промпт скопирован в буфер!');
+                }).catch(() => {
+                    fallbackCopy(promptText);
+                });
+            } else {
+                fallbackCopy(promptText);
+            }
+        });
+
+        function fallbackCopy(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast('✅ Промпт скопирован в буфер!');
+            } catch (e) {
+                showToast('❌ Не удалось скопировать');
+            }
+            document.body.removeChild(textarea);
+        }
+
+        // ======================================================================
+        // 17. SERVICE WORKER
+        // ======================================================================
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js', { scope: '/book-summary/' })
+                .then(() => console.log('✅ SW зарегистрирован успешно'))
+                .catch((err) => console.log('❌ Ошибка регистрации SW:', err));
+        } else {
+            console.log('❌ Service Worker не поддерживается');
+        }
+
         console.log('📚 Конспекты книг — PWA обновлён!');
     </script>
 </body>
