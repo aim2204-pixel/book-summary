@@ -6,6 +6,7 @@
     <title>Конспекты книг</title>
     <link rel="manifest" href="manifest.json">
     <style>
+        /* Стили (без изменений) — те же, что в предыдущей версии */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Georgia', 'Times New Roman', serif;
@@ -34,6 +35,12 @@
             margin-bottom: 14px;
             flex-wrap: wrap;
             gap: 8px;
+            position: relative;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         .header h1 {
             font-size: 1.4rem;
@@ -53,10 +60,16 @@
         }
         .header-actions {
             display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 2px;
         }
-        .header-actions button {
+        .header-actions .top-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .header-actions .top-row button {
             background: #4a7a9c;
             color: white;
             border: none;
@@ -66,20 +79,29 @@
             cursor: pointer;
             transition: 0.2s;
         }
-        .header-actions button:hover {
+        .header-actions .top-row button:hover {
             background: #36648a;
         }
-        .header-actions .dark-toggle {
+        .header-actions .top-row .dark-toggle {
             background: #6a5a4a;
         }
-        .header-actions .dark-toggle:hover {
+        .header-actions .top-row .dark-toggle:hover {
             background: #5a4a3a;
         }
-        body.dark .header-actions button {
+        body.dark .header-actions .top-row button {
             background: #5a6a7a;
         }
-        body.dark .header-actions button:hover {
+        body.dark .header-actions .top-row button:hover {
             background: #4a5a6a;
+        }
+        .header-actions .version {
+            font-size: 0.55rem;
+            color: rgba(0,0,0,0.25);
+            user-select: none;
+            letter-spacing: 0.5px;
+        }
+        body.dark .header-actions .version {
+            color: rgba(255,255,255,0.2);
         }
 
         .search-sort-row {
@@ -376,6 +398,40 @@
             font-size: 1.1rem;
             font-weight: 700;
         }
+        .modal-header .header-btns {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .modal-header .header-btns .share-btn,
+        .modal-header .header-btns .settings-btn {
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: #8a8a8a;
+            padding: 0 4px;
+            line-height: 1;
+            transition: 0.2s;
+        }
+        .modal-header .header-btns .share-btn:hover {
+            color: #2a7a5a;
+            transform: scale(1.1);
+        }
+        .modal-header .header-btns .settings-btn:hover {
+            color: #4a7a9c;
+            transform: rotate(60deg);
+        }
+        body.dark .modal-header .header-btns .share-btn,
+        body.dark .modal-header .header-btns .settings-btn {
+            color: #6a6a6a;
+        }
+        body.dark .modal-header .header-btns .share-btn:hover {
+            color: #4a9a7a;
+        }
+        body.dark .modal-header .header-btns .settings-btn:hover {
+            color: #6a8aac;
+        }
         .modal-header .close-btn {
             background: none;
             border: none;
@@ -525,7 +581,8 @@
         .view-content .view-body {
             font-size: 1.05rem;
             line-height: 1.8;
-            word-wrap: break-word;
+            text-align: justify;
+            transition: font-size 0.2s, line-height 0.2s;
         }
         .view-content .view-body h1,
         .view-content .view-body h2,
@@ -560,6 +617,7 @@
         body.dark .view-content .view-body .divider {
             background: #3a3a40;
         }
+
         .view-actions {
             display: flex;
             gap: 8px;
@@ -618,6 +676,199 @@
         }
         body.dark .view-actions .export-txt:hover {
             background: #4a6a4a;
+        }
+        .view-actions .share-action-btn {
+            background: #6a5a4a;
+            color: white;
+        }
+        .view-actions .share-action-btn:hover {
+            background: #5a4a3a;
+        }
+        body.dark .view-actions .share-action-btn {
+            background: #5a5a5a;
+        }
+        body.dark .view-actions .share-action-btn:hover {
+            background: #4a4a4a;
+        }
+
+        /* ===== POPUP ===== */
+        .settings-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px 24px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            z-index: 2000;
+            max-width: 320px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        body.dark .settings-popup {
+            background: #25252b;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+        .settings-popup.active {
+            display: block;
+        }
+        .settings-popup .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        .settings-popup .popup-header h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .settings-popup .popup-header .close-popup {
+            background: none;
+            border: none;
+            font-size: 1.6rem;
+            cursor: pointer;
+            color: #8a8a8a;
+            padding: 0 4px;
+        }
+        .settings-popup .popup-header .close-popup:hover {
+            color: #333;
+        }
+        body.dark .settings-popup .popup-header .close-popup {
+            color: #6a6a6a;
+        }
+        body.dark .settings-popup .popup-header .close-popup:hover {
+            color: #ccc;
+        }
+        .settings-popup .setting-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .settings-popup .setting-group label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1e1e1e;
+            flex: 0 0 100px;
+        }
+        body.dark .settings-popup .setting-group label {
+            color: #e0e0e0;
+        }
+        .settings-popup .setting-group input[type="range"] {
+            flex: 1;
+            margin: 0 8px;
+            padding: 0;
+            cursor: pointer;
+        }
+        .settings-popup .setting-group .value {
+            font-size: 0.8rem;
+            color: #8a8a8a;
+            min-width: 36px;
+            text-align: center;
+        }
+        body.dark .settings-popup .setting-group .value {
+            color: #6a6a6a;
+        }
+        .settings-popup .setting-group select {
+            padding: 4px 8px;
+            font-size: 0.85rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background: white;
+            font-family: inherit;
+            cursor: pointer;
+            flex: 1;
+        }
+        body.dark .settings-popup .setting-group select {
+            background: #2a2a30;
+            color: #e0e0e0;
+            border-color: #4a4a50;
+        }
+
+        .share-popup-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 6px;
+        }
+        .share-popup-buttons button {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: inherit;
+            background: #f0ede6;
+            color: #1e1e1e;
+            text-align: center;
+        }
+        .share-popup-buttons button:hover {
+            background: #e0dcd0;
+        }
+        body.dark .share-popup-buttons button {
+            background: #3a3a40;
+            color: #e0e0e0;
+        }
+        body.dark .share-popup-buttons button:hover {
+            background: #4a4a50;
+        }
+        .share-popup-buttons .share-html {
+            background: #4a7a9c;
+            color: white;
+        }
+        .share-popup-buttons .share-html:hover {
+            background: #36648a;
+        }
+        body.dark .share-popup-buttons .share-html {
+            background: #4a6a7a;
+        }
+        body.dark .share-popup-buttons .share-html:hover {
+            background: #3a5a6a;
+        }
+        .share-popup-buttons .share-txt {
+            background: #6a8a5a;
+            color: white;
+        }
+        .share-popup-buttons .share-txt:hover {
+            background: #5a7a4a;
+        }
+        body.dark .share-popup-buttons .share-txt {
+            background: #5a7a5a;
+        }
+        body.dark .share-popup-buttons .share-txt:hover {
+            background: #4a6a4a;
+        }
+        .share-popup-buttons .share-share {
+            background: #6a5a4a;
+            color: white;
+        }
+        .share-popup-buttons .share-share:hover {
+            background: #5a4a3a;
+        }
+        body.dark .share-popup-buttons .share-share {
+            background: #5a5a5a;
+        }
+        body.dark .share-popup-buttons .share-share:hover {
+            background: #4a4a4a;
+        }
+
+        .settings-popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+            z-index: 1999;
+        }
+        .settings-popup-overlay.active {
+            display: block;
         }
 
         /* ===== БЭКАП ===== */
@@ -706,6 +957,27 @@
             background: #3a3a40;
         }
 
+        .update-indicator {
+            text-align: center;
+            padding: 8px;
+            font-size: 0.8rem;
+            color: #8a8a8a;
+            user-select: none;
+            cursor: default;
+        }
+        body.dark .update-indicator {
+            color: #6a6a6a;
+        }
+        .update-indicator .spinner {
+            display: inline-block;
+            animation: spin 1s linear infinite;
+            margin-right: 6px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         @media (max-width: 600px) {
             .container { padding: 10px 10px 0 10px; }
             .header h1 { font-size: 1.15rem; }
@@ -722,6 +994,12 @@
             .search-sort-row .sort-select { min-width: 100%; }
             .action-buttons { gap: 8px; }
             .action-buttons .action-btn { font-size: 0.85rem; padding: 8px 10px; }
+            .header-actions .version { font-size: 0.5rem; }
+            .settings-popup { max-width: 90%; padding: 16px; }
+            .modal-header .header-btns .share-btn,
+            .modal-header .header-btns .settings-btn {
+                font-size: 1.2rem;
+            }
         }
     </style>
 </head>
@@ -729,10 +1007,15 @@
 
     <div id="app" class="container">
         <div class="header">
-            <h1>📚 Конспекты книг <span class="count" id="countDisplay"></span></h1>
+            <div class="header-left">
+                <h1>📚 Конспекты книг <span class="count" id="countDisplay"></span></h1>
+            </div>
             <div class="header-actions">
-                <button class="dark-toggle" id="darkToggle">🌙</button>
-                <button id="backupAllBtn">💾 Бэкап</button>
+                <div class="top-row">
+                    <button class="dark-toggle" id="darkToggle">🌙</button>
+                    <button id="backupAllBtn">💾 Бэкап</button>
+                </div>
+                <span class="version" id="versionDisplay"></span>
             </div>
         </div>
 
@@ -757,6 +1040,10 @@
 
         <div id="conspectList" class="conspect-list"></div>
 
+        <div class="update-indicator" id="updateIndicator">
+            <span id="updateStatus">⬇️ Потяните вниз для проверки обновлений</span>
+        </div>
+
         <div class="backup-section">
             <span>📦 Бэкап всех конспектов</span>
             <div class="backup-btns">
@@ -780,8 +1067,8 @@
                     <p>Для получения нового конспекта книги нужно сделать следующее:</p>
                     <ol style="margin: 12px 0 12px 20px;">
                         <li>Нажмите на кнопку <strong>«Промпт»</strong> — это скопирует инструкцию (промпт) для ИИ в буфер обмена.</li>
-                        <li>Вставьте промпт в новый чат с ИИ (DeepSeek, YandexGPT (Алиса), ChatGPT и т.д.).</li>
                         <li><strong>Замените</strong> в скопированном тексте <strong>[ВСТАВЬТЕ НАЗВАНИЕ КНИГИ]</strong> и <strong>[ВСТАВЬТЕ АВТОРА]</strong> на реальные название и автора.</li>
+                        <li>Вставьте промпт в новый чат с ИИ (DeepSeek, YandexGPT (Алиса), ChatGPT и т.д.).</li>
                         <li>Выберите режим с <strong>«размышлением»</strong> и <strong>«поиском»</strong> (если есть).</li>
                         <li>Скопируйте полученный HTML-код конспекта.</li>
                         <li>В приложении нажмите <strong>«Новый конспект»</strong>, вставьте код в поле «Текст конспекта», укажите название и автора.</li>
@@ -795,23 +1082,53 @@
         </div>
     </div>
 
-    <!-- Основное модальное окно (добавление/чтение) -->
+    <!-- Основное модальное окно -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal">
             <div class="modal-header">
                 <h2 id="modalTitle">Новый конспект</h2>
-                <button class="close-btn" id="modalCloseBtn">✕</button>
+                <div class="header-btns">
+                    <button class="share-btn" id="sharePopupBtn" title="Поделиться / Экспорт">📤</button>
+                    <button class="settings-btn" id="settingsToggleBtn" title="Настройки отображения">⚙️</button>
+                    <button class="close-btn" id="modalCloseBtn">✕</button>
+                </div>
             </div>
             <div class="modal-body" id="modalBody"></div>
             <div class="modal-footer" id="modalFooter"></div>
         </div>
     </div>
 
+    <!-- Popup настроек -->
+    <div class="settings-popup-overlay" id="settingsPopupOverlay"></div>
+    <div class="settings-popup" id="settingsPopup">
+        <div class="popup-header">
+            <h3>Настройки текста</h3>
+            <button class="close-popup" id="settingsPopupClose">✕</button>
+        </div>
+        <div id="settingsPopupContent"></div>
+    </div>
+
+    <!-- Popup экспорта / поделиться -->
+    <div class="settings-popup-overlay" id="sharePopupOverlay"></div>
+    <div class="settings-popup" id="sharePopup">
+        <div class="popup-header">
+            <h3>Экспорт / Поделиться</h3>
+            <button class="close-popup" id="sharePopupClose">✕</button>
+        </div>
+        <div id="sharePopupContent"></div>
+    </div>
+
     <div class="toast" id="toast"></div>
 
     <script>
         // ======================================================================
-        // 1. РАБОТА С БАЗОЙ ДАННЫХ (IndexedDB)
+        // 1. ВЕРСИЯ ПРИЛОЖЕНИЯ (ЕДИНСТВЕННОЕ МЕСТО ДЛЯ ИЗМЕНЕНИЯ!)
+        // ======================================================================
+        const APP_VERSION = 'V1.2.0';
+        // ======================================================================
+
+        // ======================================================================
+        // 2. РАБОТА С БАЗОЙ ДАННЫХ (IndexedDB)
         // ======================================================================
         const DB_NAME = 'ConspectsDB';
         const STORE_NAME = 'conspects';
@@ -882,7 +1199,7 @@
         }
 
         // ======================================================================
-        // 2. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+        // 3. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
         // ======================================================================
         function escapeHtml(text) {
             if (!text) return '';
@@ -897,6 +1214,12 @@
                 ' ' + d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
         }
 
+        function formatDateForFilename() {
+            const d = new Date();
+            const pad = n => String(n).padStart(2, '0');
+            return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}_${pad(d.getHours())}-${pad(d.getMinutes())}`;
+        }
+
         function showToast(msg) {
             const toast = document.getElementById('toast');
             toast.textContent = msg;
@@ -906,7 +1229,7 @@
         }
 
         // ======================================================================
-        // 3. ОЧИСТКА HTML ОТ ВНЕШНЕЙ ОБЁРТКИ
+        // 4. ОЧИСТКА HTML
         // ======================================================================
         function cleanHtmlContent(html) {
             if (!html) return '';
@@ -920,9 +1243,6 @@
             return html;
         }
 
-        // ======================================================================
-        // 4. УДАЛЕНИЕ ВСЕХ HTML-ТЕГОВ (для TXT и "Поделиться")
-        // ======================================================================
         function stripHtml(html) {
             if (!html) return '';
             const cleaned = cleanHtmlContent(html);
@@ -932,37 +1252,115 @@
         }
 
         // ======================================================================
-        // 5. ФУНКЦИЯ СОРТИРОВКИ
+        // 5. СОРТИРОВКА
         // ======================================================================
         function sortConspects(list, sortKey) {
             const copy = [...list];
             switch (sortKey) {
-                case 'date-desc':
-                    return copy.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-                case 'date-asc':
-                    return copy.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
-                case 'title-asc':
-                    return copy.sort((a, b) => (a.title || '').localeCompare(b.title || '', 'ru'));
-                case 'title-desc':
-                    return copy.sort((a, b) => (b.title || '').localeCompare(a.title || '', 'ru'));
-                case 'author-asc':
-                    return copy.sort((a, b) => (a.author || '').localeCompare(b.author || '', 'ru'));
-                case 'author-desc':
-                    return copy.sort((a, b) => (b.author || '').localeCompare(a.author || '', 'ru'));
-                default:
-                    return copy;
+                case 'date-desc': return copy.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                case 'date-asc': return copy.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+                case 'title-asc': return copy.sort((a, b) => (a.title || '').localeCompare(b.title || '', 'ru'));
+                case 'title-desc': return copy.sort((a, b) => (b.title || '').localeCompare(a.title || '', 'ru'));
+                case 'author-asc': return copy.sort((a, b) => (a.author || '').localeCompare(b.author || '', 'ru'));
+                case 'author-desc': return copy.sort((a, b) => (b.author || '').localeCompare(a.author || '', 'ru'));
+                default: return copy;
             }
         }
 
         // ======================================================================
-        // 6. СОСТОЯНИЕ ПРИЛОЖЕНИЯ
+        // 6. СОСТОЯНИЕ
         // ======================================================================
         let conspects = [];
         let currentViewId = null;
         let editId = null;
 
         // ======================================================================
-        // 7. РЕНДЕРИНГ СПИСКА
+        // 7. НАСТРОЙКИ ОТОБРАЖЕНИЯ ТЕКСТА
+        // ======================================================================
+        let textSettings = {
+            fontSize: 16,
+            lineHeight: 1.8,
+            textAlign: 'justify',
+            hyphenate: true
+        };
+
+        function applyTextSettings() {
+            const body = document.querySelector('.view-body');
+            if (!body) return;
+            body.style.fontSize = textSettings.fontSize + 'px';
+            body.style.lineHeight = textSettings.lineHeight;
+            body.style.textAlign = textSettings.textAlign;
+
+            if (textSettings.hyphenate) {
+                body.style.hyphens = 'auto';
+                body.style.overflowWrap = 'break-word';
+                body.style.wordBreak = 'normal';
+            } else {
+                body.style.hyphens = 'manual';
+                body.style.overflowWrap = 'normal';
+                body.style.wordBreak = 'normal';
+            }
+        }
+
+        function renderSettingsPopup() {
+            const container = document.getElementById('settingsPopupContent');
+            if (!container) return;
+            container.innerHTML = `
+                <div class="setting-group">
+                    <label>Размер</label>
+                    <input type="range" id="popupFontSize" min="12" max="24" step="1" value="${textSettings.fontSize}">
+                    <span class="value" id="popupFontSizeValue">${textSettings.fontSize}px</span>
+                </div>
+                <div class="setting-group">
+                    <label>Интервал</label>
+                    <select id="popupLineHeight">
+                        <option value="1.4" ${textSettings.lineHeight === 1.4 ? 'selected' : ''}>1.4</option>
+                        <option value="1.6" ${textSettings.lineHeight === 1.6 ? 'selected' : ''}>1.6</option>
+                        <option value="1.8" ${textSettings.lineHeight === 1.8 ? 'selected' : ''}>1.8</option>
+                        <option value="2.0" ${textSettings.lineHeight === 2.0 ? 'selected' : ''}>2.0</option>
+                        <option value="2.2" ${textSettings.lineHeight === 2.2 ? 'selected' : ''}>2.2</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <label>Выравнивание</label>
+                    <select id="popupTextAlign">
+                        <option value="left" ${textSettings.textAlign === 'left' ? 'selected' : ''}>По левому</option>
+                        <option value="justify" ${textSettings.textAlign === 'justify' ? 'selected' : ''}>По ширине</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <label>Перенос слов</label>
+                    <select id="popupHyphenate">
+                        <option value="true" ${textSettings.hyphenate ? 'selected' : ''}>Да</option>
+                        <option value="false" ${!textSettings.hyphenate ? 'selected' : ''}>Нет</option>
+                    </select>
+                </div>
+            `;
+
+            document.getElementById('popupFontSize')?.addEventListener('input', (e) => {
+                textSettings.fontSize = Number(e.target.value);
+                document.getElementById('popupFontSizeValue').textContent = textSettings.fontSize + 'px';
+                applyTextSettings();
+            });
+
+            document.getElementById('popupLineHeight')?.addEventListener('change', (e) => {
+                textSettings.lineHeight = Number(e.target.value);
+                applyTextSettings();
+            });
+
+            document.getElementById('popupTextAlign')?.addEventListener('change', (e) => {
+                textSettings.textAlign = e.target.value;
+                applyTextSettings();
+            });
+
+            document.getElementById('popupHyphenate')?.addEventListener('change', (e) => {
+                textSettings.hyphenate = e.target.value === 'true';
+                applyTextSettings();
+            });
+        }
+
+        // ======================================================================
+        // 8. РЕНДЕРИНГ СПИСКА
         // ======================================================================
         async function renderList(filter = '', sortKey = 'date-desc') {
             const list = document.getElementById('conspectList');
@@ -1042,7 +1440,7 @@
         }
 
         // ======================================================================
-        // 8. МОДАЛЬНОЕ ОКНО
+        // 9. МОДАЛЬНОЕ ОКНО
         // ======================================================================
         function openModal(html, footerHtml, title = 'Конспект') {
             document.getElementById('modalTitle').textContent = title;
@@ -1055,6 +1453,8 @@
             document.getElementById('modalOverlay').classList.remove('active');
             editId = null;
             currentViewId = null;
+            closeSettingsPopup();
+            closeSharePopup();
         }
 
         document.getElementById('modalOverlay').addEventListener('click', (e) => {
@@ -1064,7 +1464,7 @@
         document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
 
         // ======================================================================
-        // 9. ДОБАВЛЕНИЕ / РЕДАКТИРОВАНИЕ
+        // 10. ДОБАВЛЕНИЕ / РЕДАКТИРОВАНИЕ
         // ======================================================================
         function openAddModal(editData = null) {
             const isEdit = !!editData;
@@ -1122,7 +1522,7 @@
         }
 
         // ======================================================================
-        // 10. ПРОСМОТР КОНСПЕКТА
+        // 11. ПРОСМОТР КОНСПЕКТА
         // ======================================================================
         async function openViewModal(id) {
             const all = await getAllConspects();
@@ -1138,12 +1538,16 @@
                     <div class="view-actions">
                         <button class="export-html" data-id="${item.id}">📄 Экспорт HTML</button>
                         <button class="export-txt" data-id="${item.id}">📄 Экспорт TXT</button>
-                        <button data-id="${item.id}" id="viewShareBtn">📤 Поделиться</button>
+                        <button class="share-action-btn" data-id="${item.id}" id="viewShareBtn">📤 Поделиться</button>
                     </div>
                 </div>
             `;
 
             openModal(html, '', '📖 Чтение');
+
+            setTimeout(() => {
+                applyTextSettings();
+            }, 50);
 
             document.querySelector('.export-html')?.addEventListener('click', () => {
                 exportSingleHTML(item);
@@ -1159,7 +1563,7 @@
         }
 
         // ======================================================================
-        // 11. ЭКСПОРТ
+        // 12. ЭКСПОРТ
         // ======================================================================
         function exportSingleHTML(item) {
             const html = `<!DOCTYPE html>
@@ -1178,6 +1582,7 @@
 
             downloadFile(html, `${item.title || 'conspect'}.html`, 'text/html');
             showToast('📄 HTML экспортирован');
+            closeSharePopup();
         }
 
         function exportSingleTXT(item) {
@@ -1186,6 +1591,7 @@
 
             downloadFile(txt, `${item.title || 'conspect'}.txt`, 'text/plain');
             showToast('📄 TXT экспортирован');
+            closeSharePopup();
         }
 
         function downloadFile(content, filename, mimeType) {
@@ -1200,7 +1606,7 @@
         }
 
         // ======================================================================
-        // 12. ПОДЕЛИТЬСЯ
+        // 13. ПОДЕЛИТЬСЯ
         // ======================================================================
         function shareConspect(item) {
             const plainText = stripHtml(item.content || '');
@@ -1218,15 +1624,17 @@
                     showToast('❌ Не удалось поделиться');
                 });
             }
+            closeSharePopup();
         }
 
         // ======================================================================
-        // 13. БЭКАП
+        // 14. БЭКАП
         // ======================================================================
         async function exportAllJSON() {
             const all = await getAllConspects();
             const json = JSON.stringify(all, null, 2);
-            downloadFile(json, 'conspects_backup.json', 'application/json');
+            const filename = `conspects_backup_${formatDateForFilename()}.json`;
+            downloadFile(json, filename, 'application/json');
             showToast('💾 Бэкап сохранён');
         }
 
@@ -1289,7 +1697,7 @@
         }
 
         // ======================================================================
-        // 14. ТЁМНАЯ ТЕМА
+        // 15. ТЁМНАЯ ТЕМА
         // ======================================================================
         function toggleTheme() {
             document.body.classList.toggle('dark');
@@ -1306,9 +1714,173 @@
         }
 
         // ======================================================================
-        // 15. ИНИЦИАЛИЗАЦИЯ
+        // 16. ОБНОВЛЕНИЕ ПО СВАЙПУ
+        // ======================================================================
+        let touchStartY = 0;
+        let isCheckingUpdate = false;
+
+        function checkForUpdate() {
+            if (isCheckingUpdate) return;
+            isCheckingUpdate = true;
+
+            const status = document.getElementById('updateStatus');
+            status.innerHTML = '<span class="spinner">⟳</span> Проверка обновлений...';
+
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.ready.then(registration => {
+                    registration.update().then(() => {
+                        if (registration.waiting) {
+                            status.innerHTML = '🔄 Обновление найдено! Перезагрузите страницу.';
+                            showToast('🔄 Обновление найдено! Перезагрузите страницу.');
+                            if (confirm('Доступна новая версия приложения. Перезагрузить?')) {
+                                window.location.reload();
+                            }
+                        } else {
+                            status.innerHTML = '✅ Приложение актуально';
+                            setTimeout(() => {
+                                status.innerHTML = '⬇️ Потяните вниз для проверки обновлений';
+                            }, 2000);
+                        }
+                        isCheckingUpdate = false;
+                    }).catch(() => {
+                        status.innerHTML = '❌ Ошибка проверки';
+                        setTimeout(() => {
+                            status.innerHTML = '⬇️ Потяните вниз для проверки обновлений';
+                        }, 2000);
+                        isCheckingUpdate = false;
+                    });
+                });
+            } else {
+                status.innerHTML = '❌ Service Worker не поддерживается';
+                setTimeout(() => {
+                    status.innerHTML = '⬇️ Потяните вниз для проверки обновлений';
+                }, 2000);
+                isCheckingUpdate = false;
+            }
+        }
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        document.addEventListener('touchend', (e) => {
+            const touchEndY = e.changedTouches[0].clientY;
+            const diff = touchEndY - touchStartY;
+            if (diff > 80 && window.scrollY === 0) {
+                checkForUpdate();
+            }
+        }, { passive: true });
+
+        // ======================================================================
+        // 17. УПРАВЛЕНИЕ POPUP (настройки)
+        // ======================================================================
+        const settingsPopup = document.getElementById('settingsPopup');
+        const settingsPopupOverlay = document.getElementById('settingsPopupOverlay');
+        const settingsToggleBtn = document.getElementById('settingsToggleBtn');
+        const settingsPopupClose = document.getElementById('settingsPopupClose');
+
+        function openSettingsPopup() {
+            renderSettingsPopup();
+            settingsPopup.classList.add('active');
+            settingsPopupOverlay.classList.add('active');
+        }
+
+        function closeSettingsPopup() {
+            settingsPopup.classList.remove('active');
+            settingsPopupOverlay.classList.remove('active');
+        }
+
+        settingsToggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (settingsPopup.classList.contains('active')) {
+                closeSettingsPopup();
+            } else {
+                openSettingsPopup();
+            }
+        });
+
+        settingsPopupClose.addEventListener('click', closeSettingsPopup);
+        settingsPopupOverlay.addEventListener('click', closeSettingsPopup);
+        settingsPopup.addEventListener('click', (e) => e.stopPropagation());
+
+        // ======================================================================
+        // 18. УПРАВЛЕНИЕ POPUP (экспорт / поделиться) — ИСПРАВЛЕННЫЙ
+        // ======================================================================
+        const sharePopup = document.getElementById('sharePopup');
+        const sharePopupOverlay = document.getElementById('sharePopupOverlay');
+        const sharePopupBtn = document.getElementById('sharePopupBtn');
+        const sharePopupClose = document.getElementById('sharePopupClose');
+        const sharePopupContent = document.getElementById('sharePopupContent');
+
+        async function openSharePopup() {
+            const all = await getAllConspects();
+            let currentItem = null;
+            if (currentViewId && all) {
+                currentItem = all.find(c => c.id === currentViewId);
+            }
+
+            sharePopupContent.innerHTML = `
+                <div class="share-popup-buttons">
+                    <button class="share-html" id="sharePopupHtml">📄 Экспорт HTML</button>
+                    <button class="share-txt" id="sharePopupTxt">📄 Экспорт TXT</button>
+                    <button class="share-share" id="sharePopupShare">📤 Поделиться</button>
+                </div>
+            `;
+
+            document.getElementById('sharePopupHtml').addEventListener('click', () => {
+                if (currentItem) {
+                    exportSingleHTML(currentItem);
+                    closeSharePopup();
+                } else {
+                    showToast('❌ Нет открытого конспекта');
+                }
+            });
+            document.getElementById('sharePopupTxt').addEventListener('click', () => {
+                if (currentItem) {
+                    exportSingleTXT(currentItem);
+                    closeSharePopup();
+                } else {
+                    showToast('❌ Нет открытого конспекта');
+                }
+            });
+            document.getElementById('sharePopupShare').addEventListener('click', () => {
+                if (currentItem) {
+                    shareConspect(currentItem);
+                    closeSharePopup();
+                } else {
+                    showToast('❌ Нет открытого конспекта');
+                }
+            });
+
+            sharePopup.classList.add('active');
+            sharePopupOverlay.classList.add('active');
+        }
+
+        function closeSharePopup() {
+            sharePopup.classList.remove('active');
+            sharePopupOverlay.classList.remove('active');
+        }
+
+        sharePopupBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (sharePopup.classList.contains('active')) {
+                closeSharePopup();
+            } else {
+                openSharePopup();
+            }
+        });
+
+        sharePopupClose.addEventListener('click', closeSharePopup);
+        sharePopupOverlay.addEventListener('click', closeSharePopup);
+        sharePopup.addEventListener('click', (e) => e.stopPropagation());
+
+        // ======================================================================
+        // 19. ИНИЦИАЛИЗАЦИЯ
         // ======================================================================
         document.addEventListener('DOMContentLoaded', async () => {
+            // Устанавливаем версию
+            document.getElementById('versionDisplay').textContent = APP_VERSION;
+
             await openDB();
             loadTheme();
 
@@ -1345,18 +1917,17 @@
             });
 
             await renderList(searchInput.value, sortSelect.value);
+
+            setTimeout(checkForUpdate, 3000);
         });
 
         // ======================================================================
-        // 16. ИНСТРУКЦИЯ И ПРОМПТ
+        // 20. ИНСТРУКЦИЯ
         // ======================================================================
-
-        // Открытие инструкции
         document.getElementById('instructionBtn').addEventListener('click', () => {
             document.getElementById('instructionModal').classList.add('active');
         });
 
-        // Закрытие инструкции (крестик и кнопка)
         document.getElementById('instructionCloseBtn').addEventListener('click', () => {
             document.getElementById('instructionModal').classList.remove('active');
         });
@@ -1364,14 +1935,15 @@
             document.getElementById('instructionModal').classList.remove('active');
         });
 
-        // Закрытие инструкции по клику на фон
         document.getElementById('instructionModal').addEventListener('click', (e) => {
             if (e.target === e.currentTarget) {
                 document.getElementById('instructionModal').classList.remove('active');
             }
         });
 
-        // Копирование промпта (полный текст)
+        // ======================================================================
+        // 21. ПРОМПТ
+        // ======================================================================
         document.getElementById('promptBtn').addEventListener('click', () => {
             const promptText = `Книга: [ВСТАВЬТЕ НАЗВАНИЕ КНИГИ]
         Автор: [ВСТАВЬТЕ АВТОРА]
@@ -1383,7 +1955,7 @@
            - Заключение (общий вывод, главная мысль, призыв к действию).
            - В конце — краткий свод ключевых тезисов (как «шпаргалка»).
 
-        2. После текста конспекта создай (только после моего отдельного подтверждения!) самодостаточный HTML-документ, который полностью воспроизводит этот конспект с красивым оформлением, пригодным для чтения в браузере. Требования к HTML:
+        2. Конспект сразу выдай отдельным сообщением в формате кода для самодостаточного HTML-документа, который полностью воспроизводит этот конспект с красивым оформлением, пригодным для чтения в браузере. Требования к HTML:
            - Используй шрифт семейства Georgia или аналогичный (засечный) для основного текста, размер 16–18px, комфортный межстрочный интервал.
            - Заголовки разных уровней (h1, h2, h3) с чёткими стилями (цвет, отступы, подчёркивания или боковые линии).
            - Используй списки (нумерованные и маркированные) для перечисления пунктов, навыков, шагов.
@@ -1394,7 +1966,7 @@
            - В HTML-коде не должно быть внешних зависимостей (стили внутри тега <style>), чтобы документ открывался локально.
            - Внизу страницы размести итоговую цитату (если есть) или обобщающую фразу.
 
-        3. Следуй принципам, которые использовал Стивен Кови в «7 навыках»: выделяй не просто техники, а фундаментальные принципы и изменения характера. Постарайся передать дух книги, а не просто перечислить пункты.
+        3. Выделяй не просто техники, а фундаментальные принципы. Постарайся передать дух книги, а не просто перечислить пункты.
 
         Важно: не добавляй лишней воды, строго придерживайся содержания книги. Если книга содержит конкретные упражнения или вопросы для рефлексии — включи их кратко.
 
@@ -1428,7 +2000,7 @@
         }
 
         // ======================================================================
-        // 17. SERVICE WORKER
+        // 22. SERVICE WORKER
         // ======================================================================
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js', { scope: '/book-summary/' })
@@ -1438,7 +2010,7 @@
             console.log('❌ Service Worker не поддерживается');
         }
 
-        console.log('📚 Конспекты книг — PWA обновлён!');
+        console.log('📚 Конспекты книг — PWA готов (v' + APP_VERSION + ')');
     </script>
 </body>
 </html>
