@@ -6,7 +6,6 @@
     <title>Конспекты книг</title>
     <link rel="manifest" href="manifest.json">
     <style>
-        /* Стили (без изменений) — те же, что в предыдущей версии */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Georgia', 'Times New Roman', serif;
@@ -797,32 +796,33 @@
         .share-popup-buttons button {
             padding: 12px 16px;
             border: none;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
+            border-radius: 14px;
+            font-size: 1.05rem;
+            font-weight: 700;
             cursor: pointer;
             transition: 0.2s;
             font-family: inherit;
-            background: #f0ede6;
+            background: #d0d0d0;
             color: #1e1e1e;
             text-align: center;
         }
         .share-popup-buttons button:hover {
-            background: #e0dcd0;
+            opacity: 0.85;
+            transform: scale(0.98);
         }
         body.dark .share-popup-buttons button {
-            background: #3a3a40;
+            background: #4a4a50;
             color: #e0e0e0;
         }
         body.dark .share-popup-buttons button:hover {
-            background: #4a4a50;
+            background: #5a5a60;
         }
         .share-popup-buttons .share-html {
-            background: #4a7a9c;
+            background: #5a7a8a;
             color: white;
         }
         .share-popup-buttons .share-html:hover {
-            background: #36648a;
+            background: #4a6a7a;
         }
         body.dark .share-popup-buttons .share-html {
             background: #4a6a7a;
@@ -831,11 +831,11 @@
             background: #3a5a6a;
         }
         .share-popup-buttons .share-txt {
-            background: #6a8a5a;
+            background: #6a8a6a;
             color: white;
         }
         .share-popup-buttons .share-txt:hover {
-            background: #5a7a4a;
+            background: #5a7a5a;
         }
         body.dark .share-popup-buttons .share-txt {
             background: #5a7a5a;
@@ -844,17 +844,17 @@
             background: #4a6a4a;
         }
         .share-popup-buttons .share-share {
-            background: #6a5a4a;
+            background: #8a7a6a;
             color: white;
         }
         .share-popup-buttons .share-share:hover {
-            background: #5a4a3a;
+            background: #7a6a5a;
         }
         body.dark .share-popup-buttons .share-share {
-            background: #5a5a5a;
+            background: #6a5a4a;
         }
         body.dark .share-popup-buttons .share-share:hover {
-            background: #4a4a4a;
+            background: #5a4a3a;
         }
 
         .settings-popup-overlay {
@@ -1124,7 +1124,7 @@
         // ======================================================================
         // 1. ВЕРСИЯ ПРИЛОЖЕНИЯ (ЕДИНСТВЕННОЕ МЕСТО ДЛЯ ИЗМЕНЕНИЯ!)
         // ======================================================================
-        const APP_VERSION = 'V1.2.2';
+        const APP_VERSION = 'V1.2.3';
         // ======================================================================
 
         // ======================================================================
@@ -1638,6 +1638,9 @@
             showToast('💾 Бэкап сохранён');
         }
 
+        // ======================================================================
+        // 15. ИМПОРТ JSON (УЛУЧШЕННЫЙ)
+        // ======================================================================
         async function importJSON(file) {
             try {
                 const text = await file.text();
@@ -1647,19 +1650,66 @@
                     return;
                 }
 
+                const currentConspects = await getAllConspects();
+                const currentCount = currentConspects.length;
+                const fileCount = data.length;
+
+                // Формируем модальное окно с информацией
                 const modalHtml = `
                     <div style="text-align:center; padding:20px 0;">
-                        <p style="font-size:1.2rem; margin-bottom:12px;">📥 Найдено <strong>${data.length}</strong> конспектов</p>
-                        <p style="color:#6a6a6a; margin-bottom:24px;">Как вы хотите их добавить?</p>
-                        <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
-                            <button id="importReplaceBtn" class="btn-primary" style="background:#c0392b; padding:12px 28px;">🔄 Заменить все</button>
-                            <button id="importMergeBtn" class="btn-primary" style="background:#2a7a5a; padding:12px 28px;">➕ Дополнить</button>
+                        <p style="font-size:1.2rem; margin-bottom:8px;">📥 Импорт конспектов</p>
+                        <p style="color:#6a6a6a; margin-bottom:4px;">В приложении: <strong>${currentCount}</strong> конспектов</p>
+                        <p style="color:#6a6a6a; margin-bottom:20px;">В файле: <strong>${fileCount}</strong> конспектов</p>
+                        <p style="color:#8a8a8a; font-size:0.9rem; margin-bottom:20px;">Как вы хотите их добавить?</p>
+                        <div style="display:flex; flex-direction:column; gap:12px; align-items:center;">
+                            <button id="importReplaceBtn" style="
+                                width:100%; max-width:260px;
+                                padding:14px 20px;
+                                border: none;
+                                border-radius:14px;
+                                font-size:1.05rem;
+                                font-weight:700;
+                                cursor:pointer;
+                                transition:0.2s;
+                                font-family: inherit;
+                                background:#5a7a8a;
+                                color:white;
+                                box-shadow:0 2px 8px rgba(0,0,0,0.08);
+                            ">🔄 Заменить все</button>
+                            <button id="importMergeBtn" style="
+                                width:100%; max-width:260px;
+                                padding:14px 20px;
+                                border: none;
+                                border-radius:14px;
+                                font-size:1.05rem;
+                                font-weight:700;
+                                cursor:pointer;
+                                transition:0.2s;
+                                font-family: inherit;
+                                background:#6a8a6a;
+                                color:white;
+                                box-shadow:0 2px 8px rgba(0,0,0,0.08);
+                            ">➕ Дополнить</button>
+                            <button id="importCancelBtn" style="
+                                width:100%; max-width:260px;
+                                padding:12px 20px;
+                                border: none;
+                                border-radius:14px;
+                                font-size:1.0rem;
+                                font-weight:600;
+                                cursor:pointer;
+                                transition:0.2s;
+                                font-family: inherit;
+                                background:#8a8a8a;
+                                color:white;
+                                box-shadow:0 2px 8px rgba(0,0,0,0.05);
+                            ">Отмена</button>
                         </div>
-                        <button id="importCancelBtn" class="btn-secondary" style="margin-top:16px;">Отмена</button>
                     </div>
                 `;
                 openModal(modalHtml, '', 'Импорт JSON');
 
+                // Обработчик "Заменить все" — очищаем и загружаем всё
                 document.getElementById('importReplaceBtn').addEventListener('click', async () => {
                     await clearAllConspects();
                     for (const item of data) {
@@ -1674,14 +1724,32 @@
                     );
                 });
 
+                // Обработчик "Дополнить" — добавляем только уникальные (по полному совпадению title+author+content)
                 document.getElementById('importMergeBtn').addEventListener('click', async () => {
-                    let count = 0;
+                    let added = 0;
+                    let duplicates = 0;
+
+                    // Создаём множество существующих конспектов для быстрой проверки
+                    const existingSet = new Set();
+                    currentConspects.forEach(c => {
+                        const key = `${c.title || ''}||${c.author || ''}||${c.content || ''}`;
+                        existingSet.add(key);
+                    });
+
                     for (const item of data) {
-                        const { id, ...rest } = item;
-                        await addConspect(rest);
-                        count++;
+                        const key = `${item.title || ''}||${item.author || ''}||${item.content || ''}`;
+                        if (existingSet.has(key)) {
+                            duplicates++;
+                        } else {
+                            const { id, ...rest } = item;
+                            await addConspect(rest);
+                            added++;
+                            // Добавляем в множество, чтобы избежать дубликатов внутри самого файла
+                            existingSet.add(key);
+                        }
                     }
-                    showToast(`✅ Добавлено ${count} конспектов`);
+
+                    showToast(`✅ Добавлено ${added} конспектов, ⏩ пропущено (дубликаты): ${duplicates}`);
                     closeModal();
                     renderList(
                         document.getElementById('searchInput').value,
@@ -1697,7 +1765,7 @@
         }
 
         // ======================================================================
-        // 15. ТЁМНАЯ ТЕМА
+        // 16. ТЁМНАЯ ТЕМА
         // ======================================================================
         function toggleTheme() {
             document.body.classList.toggle('dark');
@@ -1714,49 +1782,50 @@
         }
 
         // ======================================================================
-        // 16. ОБНОВЛЕНИЕ ПО СВАЙПУ
+        // 17. ОБНОВЛЕНИЕ ПО СВАЙПУ (через version.json)
         // ======================================================================
         let touchStartY = 0;
         let isCheckingUpdate = false;
 
-        function checkForUpdate() {
+        async function checkForUpdate() {
             if (isCheckingUpdate) return;
             isCheckingUpdate = true;
 
             const status = document.getElementById('updateStatus');
             status.innerHTML = '<span class="spinner">⟳</span> Проверка обновлений...';
 
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.ready.then(registration => {
-                    registration.update().then(() => {
-                        if (registration.waiting) {
-                            status.innerHTML = '🔄 Обновление найдено! Перезагрузите страницу.';
-                            showToast('🔄 Обновление найдено! Перезагрузите страницу.');
-                            if (confirm('Доступна новая версия приложения. Перезагрузить?')) {
-                                window.location.reload();
-                            }
-                        } else {
-                            status.innerHTML = '✅ Приложение актуально';
-                            setTimeout(() => {
-                                status.innerHTML = '⬇️ Потяните вниз для проверки обновлений';
-                            }, 2000);
-                        }
-                        isCheckingUpdate = false;
-                    }).catch(() => {
-                        status.innerHTML = '❌ Ошибка проверки';
-                        setTimeout(() => {
-                            status.innerHTML = '⬇️ Потяните вниз для проверки обновлений';
-                        }, 2000);
-                        isCheckingUpdate = false;
-                    });
-                });
-            } else {
-                status.innerHTML = '❌ Service Worker не поддерживается';
+            try {
+                const response = await fetch('version.json', { cache: 'reload' });
+                if (!response.ok) throw new Error('Не удалось загрузить version.json');
+                const data = await response.json();
+                const remoteVersion = data.version || '';
+
+                if (remoteVersion && remoteVersion !== APP_VERSION) {
+                    // Есть новая версия
+                    status.innerHTML = '🔄 Доступна новая версия! Перезагрузите страницу.';
+                    showToast('🔄 Доступна новая версия! Перезагрузите страницу.');
+                    if (confirm(`Доступна новая версия (${remoteVersion}). Обновить сейчас?`)) {
+                        window.location.reload();
+                    } else {
+                        status.innerHTML = '⬇️ Потяните вниз для проверки обновлений';
+                    }
+                } else {
+                    // Версия актуальна
+                    status.innerHTML = '✅ Приложение актуально';
+                    setTimeout(() => {
+                        status.innerHTML = '⬇️ Потяните вниз для проверки обновлений';
+                    }, 2000);
+                }
+            } catch (error) {
+                // Ошибка (нет сети или файл недоступен)
+                status.innerHTML = '❌ Нет соединения для проверки обновлений';
+                showToast('❌ Нет соединения для проверки обновлений');
                 setTimeout(() => {
                     status.innerHTML = '⬇️ Потяните вниз для проверки обновлений';
-                }, 2000);
-                isCheckingUpdate = false;
+                }, 2500);
             }
+
+            isCheckingUpdate = false;
         }
 
         document.addEventListener('touchstart', (e) => {
@@ -1772,7 +1841,7 @@
         }, { passive: true });
 
         // ======================================================================
-        // 17. УПРАВЛЕНИЕ POPUP (настройки)
+        // 18. УПРАВЛЕНИЕ POPUP (настройки)
         // ======================================================================
         const settingsPopup = document.getElementById('settingsPopup');
         const settingsPopupOverlay = document.getElementById('settingsPopupOverlay');
@@ -1804,7 +1873,7 @@
         settingsPopup.addEventListener('click', (e) => e.stopPropagation());
 
         // ======================================================================
-        // 18. УПРАВЛЕНИЕ POPUP (экспорт / поделиться) — ИСПРАВЛЕННЫЙ
+        // 19. УПРАВЛЕНИЕ POPUP (экспорт / поделиться)
         // ======================================================================
         const sharePopup = document.getElementById('sharePopup');
         const sharePopupOverlay = document.getElementById('sharePopupOverlay');
@@ -1875,7 +1944,7 @@
         sharePopup.addEventListener('click', (e) => e.stopPropagation());
 
         // ======================================================================
-        // 19. ИНИЦИАЛИЗАЦИЯ
+        // 20. ИНИЦИАЛИЗАЦИЯ
         // ======================================================================
         document.addEventListener('DOMContentLoaded', async () => {
             // Устанавливаем версию
@@ -1918,11 +1987,12 @@
 
             await renderList(searchInput.value, sortSelect.value);
 
+            // Проверка обновлений при загрузке
             setTimeout(checkForUpdate, 3000);
         });
 
         // ======================================================================
-        // 20. ИНСТРУКЦИЯ
+        // 21. ИНСТРУКЦИЯ
         // ======================================================================
         document.getElementById('instructionBtn').addEventListener('click', () => {
             document.getElementById('instructionModal').classList.add('active');
@@ -1942,7 +2012,7 @@
         });
 
         // ======================================================================
-        // 21. ПРОМПТ
+        // 22. ПРОМПТ
         // ======================================================================
         document.getElementById('promptBtn').addEventListener('click', () => {
             const promptText = `Книга: [ВСТАВЬТЕ НАЗВАНИЕ КНИГИ]
@@ -2000,7 +2070,7 @@
         }
 
         // ======================================================================
-        // 22. SERVICE WORKER
+        // 23. SERVICE WORKER
         // ======================================================================
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js', { scope: '/book-summary/' })
