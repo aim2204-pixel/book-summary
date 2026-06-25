@@ -1782,7 +1782,7 @@
         }
 
         // ======================================================================
-        // 17. ОБНОВЛЕНИЕ ПО СВАЙПУ (через version.json)
+        // 17. ОБНОВЛЕНИЕ ПО СВАЙПУ (через version.json с параметром времени)
         // ======================================================================
         let touchStartY = 0;
         let isCheckingUpdate = false;
@@ -1795,7 +1795,9 @@
             status.innerHTML = '<span class="spinner">⟳</span> Проверка обновлений...';
 
             try {
-                const response = await fetch('version.json', { cache: 'reload' });
+                // Добавляем уникальный параметр, чтобы полностью обойти кэш
+                const url = 'version.json?t=' + Date.now();
+                const response = await fetch(url, { cache: 'no-store' });
                 if (!response.ok) throw new Error('Не удалось загрузить version.json');
                 const data = await response.json();
                 const remoteVersion = data.version || '';
