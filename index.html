@@ -67,6 +67,7 @@
             display: flex;
             gap: 8px;
             align-items: center;
+            flex-wrap: wrap;
         }
         .header-actions .top-row button {
             background: #4a7a9c;
@@ -77,6 +78,7 @@
             font-size: 0.85rem;
             cursor: pointer;
             transition: 0.2s;
+            font-family: inherit;
         }
         .header-actions .top-row button:hover {
             background: #36648a;
@@ -92,6 +94,21 @@
         }
         body.dark .header-actions .top-row button:hover {
             background: #4a5a6a;
+        }
+        /* Стиль для кнопки установки */
+        .header-actions .top-row .install-btn {
+            background: #2a7a5a;
+            color: white;
+            display: none; /* скрыта по умолчанию */
+        }
+        .header-actions .top-row .install-btn:hover {
+            background: #1a6a4a;
+        }
+        body.dark .header-actions .top-row .install-btn {
+            background: #3a7a5a;
+        }
+        body.dark .header-actions .top-row .install-btn:hover {
+            background: #2a6a4a;
         }
         .header-actions .version {
             font-size: 0.55rem;
@@ -1013,6 +1030,7 @@
             <div class="header-actions">
                 <div class="top-row">
                     <button class="dark-toggle" id="darkToggle">🌙</button>
+                    <button class="install-btn" id="installBtn">📲 Установить</button>
                     <button id="backupAllBtn">💾 Бэкап</button>
                 </div>
                 <span class="version" id="versionDisplay"></span>
@@ -1122,7 +1140,7 @@
 
     <script>
         // ======================================================================
-        // 1. ВЕРСИЯ ПРИЛОЖЕНИЯ (ЕДИНСТВЕННОЕ МЕСТО ДЛЯ ИЗМЕНЕНИЯ!)
+        // 1. ВЕРСИЯ ПРИЛОЖЕНИЯ
         // ======================================================================
         const APP_VERSION = 'V1.2.3';
         // ======================================================================
@@ -1639,7 +1657,7 @@
         }
 
         // ======================================================================
-        // 15. ИМПОРТ JSON (УЛУЧШЕННЫЙ)
+        // 15. ИМПОРТ JSON
         // ======================================================================
         async function importJSON(file) {
             try {
@@ -1654,7 +1672,6 @@
                 const currentCount = currentConspects.length;
                 const fileCount = data.length;
 
-                // Формируем модальное окно с информацией
                 const modalHtml = `
                     <div style="text-align:center; padding:20px 0;">
                         <p style="font-size:1.2rem; margin-bottom:8px;">📥 Импорт конспектов</p>
@@ -1709,7 +1726,6 @@
                 `;
                 openModal(modalHtml, '', 'Импорт JSON');
 
-                // Обработчик "Заменить все" — очищаем и загружаем всё
                 document.getElementById('importReplaceBtn').addEventListener('click', async () => {
                     await clearAllConspects();
                     for (const item of data) {
@@ -1724,12 +1740,10 @@
                     );
                 });
 
-                // Обработчик "Дополнить" — добавляем только уникальные (по полному совпадению title+author+content)
                 document.getElementById('importMergeBtn').addEventListener('click', async () => {
                     let added = 0;
                     let duplicates = 0;
 
-                    // Создаём множество существующих конспектов для быстрой проверки
                     const existingSet = new Set();
                     currentConspects.forEach(c => {
                         const key = `${c.title || ''}||${c.author || ''}||${c.content || ''}`;
@@ -1744,7 +1758,6 @@
                             const { id, ...rest } = item;
                             await addConspect(rest);
                             added++;
-                            // Добавляем в множество, чтобы избежать дубликатов внутри самого файла
                             existingSet.add(key);
                         }
                     }
@@ -1782,7 +1795,7 @@
         }
 
         // ======================================================================
-        // 17. ОБНОВЛЕНИЕ ПО СВАЙПУ (через version.json с параметром времени)
+        // 17. ОБНОВЛЕНИЕ ПО СВАЙПУ
         // ======================================================================
         let touchStartY = 0;
         let isCheckingUpdate = false;
@@ -1795,7 +1808,6 @@
             status.innerHTML = '<span class="spinner">⟳</span> Проверка обновлений...';
 
             try {
-                // Добавляем уникальный параметр, чтобы полностью обойти кэш
                 const url = 'version.json?t=' + Date.now();
                 const response = await fetch(url, { cache: 'no-store' });
                 if (!response.ok) throw new Error('Не удалось загрузить version.json');
@@ -1803,7 +1815,6 @@
                 const remoteVersion = data.version || '';
 
                 if (remoteVersion && remoteVersion !== APP_VERSION) {
-                    // Есть новая версия
                     status.innerHTML = '🔄 Доступна новая версия! Перезагрузите страницу.';
                     showToast('🔄 Доступна новая версия! Перезагрузите страницу.');
                     if (confirm(`Доступна новая версия (${remoteVersion}). Обновить сейчас?`)) {
@@ -1812,14 +1823,12 @@
                         status.innerHTML = '⬇️ Потяните вниз для проверки обновлений';
                     }
                 } else {
-                    // Версия актуальна
                     status.innerHTML = '✅ Приложение актуально';
                     setTimeout(() => {
                         status.innerHTML = '⬇️ Потяните вниз для проверки обновлений';
                     }, 2000);
                 }
             } catch (error) {
-                // Ошибка (нет сети или файл недоступен)
                 status.innerHTML = '❌ Нет соединения для проверки обновлений';
                 showToast('❌ Нет соединения для проверки обновлений');
                 setTimeout(() => {
@@ -1843,7 +1852,34 @@
         }, { passive: true });
 
         // ======================================================================
-        // 18. УПРАВЛЕНИЕ POPUP (настройки)
+        // 18. УСТАНОВКА PWA
+        // ======================================================================
+        let deferredPrompt;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installBtn').style.display = 'inline-block';
+        });
+
+        document.getElementById('installBtn').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const result = await deferredPrompt.userChoice;
+                if (result.outcome === 'accepted') {
+                    showToast('✅ Приложение установлено!');
+                } else {
+                    showToast('❌ Установка отменена');
+                }
+                deferredPrompt = null;
+                document.getElementById('installBtn').style.display = 'none';
+            } else {
+                showToast('❌ Установка не поддерживается в этом браузере');
+            }
+        });
+
+        // ======================================================================
+        // 19. УПРАВЛЕНИЕ POPUP (настройки)
         // ======================================================================
         const settingsPopup = document.getElementById('settingsPopup');
         const settingsPopupOverlay = document.getElementById('settingsPopupOverlay');
@@ -1875,7 +1911,7 @@
         settingsPopup.addEventListener('click', (e) => e.stopPropagation());
 
         // ======================================================================
-        // 19. УПРАВЛЕНИЕ POPUP (экспорт / поделиться)
+        // 20. УПРАВЛЕНИЕ POPUP (экспорт / поделиться)
         // ======================================================================
         const sharePopup = document.getElementById('sharePopup');
         const sharePopupOverlay = document.getElementById('sharePopupOverlay');
@@ -1946,10 +1982,9 @@
         sharePopup.addEventListener('click', (e) => e.stopPropagation());
 
         // ======================================================================
-        // 20. ИНИЦИАЛИЗАЦИЯ
+        // 21. ИНИЦИАЛИЗАЦИЯ
         // ======================================================================
         document.addEventListener('DOMContentLoaded', async () => {
-            // Устанавливаем версию
             document.getElementById('versionDisplay').textContent = APP_VERSION;
 
             await openDB();
@@ -1989,12 +2024,11 @@
 
             await renderList(searchInput.value, sortSelect.value);
 
-            // Проверка обновлений при загрузке
             setTimeout(checkForUpdate, 3000);
         });
 
         // ======================================================================
-        // 21. ИНСТРУКЦИЯ
+        // 22. ИНСТРУКЦИЯ
         // ======================================================================
         document.getElementById('instructionBtn').addEventListener('click', () => {
             document.getElementById('instructionModal').classList.add('active');
@@ -2014,7 +2048,7 @@
         });
 
         // ======================================================================
-        // 22. ПРОМПТ
+        // 23. ПРОМПТ
         // ======================================================================
         document.getElementById('promptBtn').addEventListener('click', () => {
             const promptText = `Книга: [ВСТАВЬТЕ НАЗВАНИЕ КНИГИ]
@@ -2072,7 +2106,7 @@
         }
 
         // ======================================================================
-        // 23. SERVICE WORKER
+        // 24. SERVICE WORKER
         // ======================================================================
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js', { scope: '/book-summary/' })
