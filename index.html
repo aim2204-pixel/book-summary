@@ -6,7 +6,7 @@
     <title>Конспекты книг</title>
     <link rel="manifest" href="manifest.json">
     <style>
-        /* (стили остаются без изменений — те же, что в предыдущей версии) */
+        /* (стили без изменений — те же, что в предыдущей версии) */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Georgia', 'Times New Roman', serif;
@@ -288,6 +288,25 @@
         body.dark .conspect-card .author {
             color: #9a9a9a;
         }
+        /* Стили для тегов */
+        .conspect-card .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 4px;
+        }
+        .conspect-card .tag {
+            background: #e8e4dc;
+            color: #3a2c1b;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+        body.dark .conspect-card .tag {
+            background: #3a3a40;
+            color: #d4c5a0;
+        }
         .conspect-card .card-bottom {
             display: flex;
             justify-content: space-between;
@@ -346,20 +365,7 @@
             color: #4a9a7a;
         }
 
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: #8a8a8a;
-        }
-        body.dark .empty-state {
-            color: #6a6a6a;
-        }
-        .empty-state .icon {
-            font-size: 4rem;
-            margin-bottom: 12px;
-        }
-
-        /* Стиль для конспекта-напоминания */
+        /* Карточка-напоминание */
         .conspect-card.reminder-card {
             border-left-color: #d4a040;
             background: #fdf8f0;
@@ -385,6 +391,19 @@
         }
         body.dark .conspect-card.reminder-card .date {
             color: #7a6a5a;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #8a8a8a;
+        }
+        body.dark .empty-state {
+            color: #6a6a6a;
+        }
+        .empty-state .icon {
+            font-size: 4rem;
+            margin-bottom: 12px;
         }
 
         /* ===== МОДАЛЬНОЕ ОКНО ===== */
@@ -721,6 +740,19 @@
         body.dark .view-actions .export-txt:hover {
             background: #4a6a4a;
         }
+        .view-actions .export-md {
+            background: #8a6a5a;
+            color: white;
+        }
+        .view-actions .export-md:hover {
+            background: #7a5a4a;
+        }
+        body.dark .view-actions .export-md {
+            background: #6a5a5a;
+        }
+        body.dark .view-actions .export-md:hover {
+            background: #5a4a4a;
+        }
         .view-actions .share-action-btn {
             background: #6a5a4a;
             color: white;
@@ -863,11 +895,11 @@
             background: #5a5a60;
         }
         .share-popup-buttons .share-html {
-            background: #5a7a8a;
+            background: #4a7a9c;
             color: white;
         }
         .share-popup-buttons .share-html:hover {
-            background: #4a6a7a;
+            background: #36648a;
         }
         body.dark .share-popup-buttons .share-html {
             background: #4a6a7a;
@@ -876,11 +908,11 @@
             background: #3a5a6a;
         }
         .share-popup-buttons .share-txt {
-            background: #6a8a6a;
+            background: #6a8a5a;
             color: white;
         }
         .share-popup-buttons .share-txt:hover {
-            background: #5a7a5a;
+            background: #5a7a4a;
         }
         body.dark .share-popup-buttons .share-txt {
             background: #5a7a5a;
@@ -888,18 +920,31 @@
         body.dark .share-popup-buttons .share-txt:hover {
             background: #4a6a4a;
         }
+        .share-popup-buttons .share-md {
+            background: #8a6a5a;
+            color: white;
+        }
+        .share-popup-buttons .share-md:hover {
+            background: #7a5a4a;
+        }
+        body.dark .share-popup-buttons .share-md {
+            background: #6a5a5a;
+        }
+        body.dark .share-popup-buttons .share-md:hover {
+            background: #5a4a4a;
+        }
         .share-popup-buttons .share-share {
-            background: #8a7a6a;
+            background: #6a5a4a;
             color: white;
         }
         .share-popup-buttons .share-share:hover {
-            background: #7a6a5a;
+            background: #5a4a3a;
         }
         body.dark .share-popup-buttons .share-share {
-            background: #6a5a4a;
+            background: #5a5a5a;
         }
         body.dark .share-popup-buttons .share-share:hover {
-            background: #5a4a3a;
+            background: #4a4a4a;
         }
 
         .settings-popup-overlay {
@@ -1066,7 +1111,7 @@
         </div>
 
         <div class="search-sort-row">
-            <input class="search-bar" id="searchInput" type="text" placeholder="🔍 Поиск...">
+            <input class="search-bar" id="searchInput" type="text" placeholder="🔍 Поиск по названию, автору, тегам...">
             <select class="sort-select" id="sortSelect">
                 <option value="date-desc">📅 По дате (новые)</option>
                 <option value="date-asc">📅 По дате (старые)</option>
@@ -1117,7 +1162,7 @@
                         <li>Вставьте промпт в новый чат с ИИ (DeepSeek, YandexGPT (Алиса), ChatGPT и т.д.).</li>
                         <li>Выберите режим с <strong>«размышлением»</strong> и <strong>«поиском»</strong> (если есть).</li>
                         <li>Скопируйте полученный HTML-код конспекта.</li>
-                        <li>В приложении нажмите <strong>«Новый конспект»</strong>, вставьте код в поле «Текст конспекта», укажите название и автора.</li>
+                        <li>В приложении нажмите <strong>«Новый конспект»</strong>, вставьте код в поле «Текст конспекта», укажите название, автора и теги (через запятую).</li>
                     </ol>
                     <p style="color: #6a6a6a; font-size: 0.95rem; margin-top: 12px;">💡 <strong>P.S.</strong> Для доступа к отдельным ИИ может потребоваться учётная запись.</p>
                 </div>
@@ -1170,7 +1215,7 @@
         // ======================================================================
         // 1. ВЕРСИЯ ПРИЛОЖЕНИЯ
         // ======================================================================
-        const APP_VERSION = 'V1.2.4';
+        const APP_VERSION = 'V1.2.5';
         const BACKUP_REMINDER_DAYS = 10;
         const BACKUP_DATE_KEY = 'lastBackupDate';
         const BACKUP_WARNING_SHOWN_KEY = 'backupWarningShown';
@@ -1321,6 +1366,7 @@
         let conspects = [];
         let currentViewId = null;
         let editId = null;
+        let viewScrollPosition = 0; // для сохранения позиции
 
         // ======================================================================
         // 7. НАСТРОЙКИ ОТОБРАЖЕНИЯ ТЕКСТА
@@ -1480,7 +1526,62 @@
         }
 
         // ======================================================================
-        // 10. РЕНДЕРИНГ СПИСКА (с напоминанием)
+        // 10. HTML → MARKDOWN КОНВЕРТЕР
+        // ======================================================================
+        function htmlToMarkdown(html) {
+            if (!html) return '';
+            // Удаляем внешнюю обёртку, если есть
+            const cleaned = cleanHtmlContent(html);
+            let text = cleaned;
+
+            // Заменяем заголовки
+            text = text.replace(/<h1>(.*?)<\/h1>/gi, '# $1\n\n');
+            text = text.replace(/<h2>(.*?)<\/h2>/gi, '## $1\n\n');
+            text = text.replace(/<h3>(.*?)<\/h3>/gi, '### $1\n\n');
+
+            // Заменяем параграфы (с учётом переносов)
+            text = text.replace(/<p>(.*?)<\/p>/gi, '$1\n\n');
+
+            // Заменяем блоки цитат
+            text = text.replace(/<blockquote>(.*?)<\/blockquote>/gi, '> $1\n\n');
+
+            // Заменяем списки
+            // Сначала маркированные (ul)
+            text = text.replace(/<ul>(.*?)<\/ul>/gis, (match, content) => {
+                const items = content.match(/<li>(.*?)<\/li>/gi) || [];
+                return items.map(item => {
+                    const liText = item.replace(/<\/?li>/gi, '').trim();
+                    return `- ${liText}`;
+                }).join('\n') + '\n\n';
+            });
+            // Нумерованные (ol)
+            text = text.replace(/<ol>(.*?)<\/ol>/gis, (match, content) => {
+                const items = content.match(/<li>(.*?)<\/li>/gi) || [];
+                return items.map((item, idx) => {
+                    const liText = item.replace(/<\/?li>/gi, '').trim();
+                    return `${idx+1}. ${liText}`;
+                }).join('\n') + '\n\n';
+            });
+
+            // Жирный и курсив
+            text = text.replace(/<strong>(.*?)<\/strong>/gi, '**$1**');
+            text = text.replace(/<b>(.*?)<\/b>/gi, '**$1**');
+            text = text.replace(/<em>(.*?)<\/em>/gi, '*$1*');
+            text = text.replace(/<i>(.*?)<\/i>/gi, '*$1*');
+
+            // Горизонтальные разделители
+            text = text.replace(/<hr\s*\/?>/gi, '---\n\n');
+
+            // Удаляем оставшиеся HTML-теги (на всякий случай)
+            text = text.replace(/<[^>]*>/g, '');
+
+            // Убираем лишние пустые строки
+            text = text.replace(/\n{3,}/g, '\n\n');
+            return text.trim();
+        }
+
+        // ======================================================================
+        // 11. РЕНДЕРИНГ СПИСКА (с тегами и расширенным поиском)
         // ======================================================================
         async function renderList(filter = '', sortKey = 'date-desc') {
             const list = document.getElementById('conspectList');
@@ -1493,15 +1594,21 @@
             const query = filter.toLowerCase().trim();
             let filtered = conspects;
             if (query) {
-                filtered = conspects.filter(c =>
-                    (c.title && c.title.toLowerCase().includes(query)) ||
-                    (c.author && c.author.toLowerCase().includes(query))
-                );
+                filtered = conspects.filter(c => {
+                    const titleMatch = c.title && c.title.toLowerCase().includes(query);
+                    const authorMatch = c.author && c.author.toLowerCase().includes(query);
+                    const tagsMatch = c.tags && c.tags.toLowerCase().includes(query);
+                    return titleMatch || authorMatch || tagsMatch;
+                });
             }
 
             const sorted = sortConspects(filtered, sortKey);
 
-            if (sorted.length === 0 && !shouldShowBackupReminder()) {
+            // Формируем HTML
+            let html = '';
+            const showReminder = shouldShowBackupReminder();
+
+            if (sorted.length === 0 && !showReminder) {
                 list.innerHTML = `
                     <div class="empty-state">
                         <div class="icon">📖</div>
@@ -1511,22 +1618,32 @@
                 return;
             }
 
-            let html = sorted.map(c => `
-                <div class="conspect-card" data-id="${c.id}">
-                    <div class="title">${escapeHtml(c.title || 'Без названия')}</div>
-                    <div class="author">${escapeHtml(c.author || 'Автор неизвестен')}</div>
-                    <div class="card-bottom">
-                        <span class="date">${formatDate(c.createdAt || Date.now())}</span>
-                        <div class="card-actions">
-                            <button class="edit-btn" data-id="${c.id}" title="Редактировать">✏️</button>
-                            <button class="delete-btn" data-id="${c.id}" title="Удалить">🗑</button>
+            sorted.forEach(c => {
+                const tags = c.tags ? c.tags.split(',').map(t => t.trim()).filter(Boolean) : [];
+                const tagsHtml = tags.length > 0 ? `
+                    <div class="tags">
+                        ${tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}
+                    </div>
+                ` : '';
+
+                html += `
+                    <div class="conspect-card" data-id="${c.id}">
+                        <div class="title">${escapeHtml(c.title || 'Без названия')}</div>
+                        <div class="author">${escapeHtml(c.author || 'Автор неизвестен')}</div>
+                        ${tagsHtml}
+                        <div class="card-bottom">
+                            <span class="date">${formatDate(c.createdAt || Date.now())}</span>
+                            <div class="card-actions">
+                                <button class="edit-btn" data-id="${c.id}" title="Редактировать">✏️</button>
+                                <button class="delete-btn" data-id="${c.id}" title="Удалить">🗑</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            });
 
             // Добавляем карточку-напоминание, если нужно
-            if (shouldShowBackupReminder()) {
+            if (showReminder) {
                 const reminderCard = `
                     <div class="conspect-card reminder-card" id="backupReminderCard">
                         <div class="title">⚠️ Сделайте бэкап конспектов</div>
@@ -1583,7 +1700,7 @@
         }
 
         // ======================================================================
-        // 11. МОДАЛЬНОЕ ОКНО (общее)
+        // 12. МОДАЛЬНОЕ ОКНО (общее)
         // ======================================================================
         function openModal(html, footerHtml, title = 'Конспект') {
             document.getElementById('modalTitle').textContent = title;
@@ -1595,6 +1712,14 @@
         function closeModal() {
             document.getElementById('modalOverlay').classList.remove('active');
             editId = null;
+            // Сохраняем позицию прокрутки перед закрытием, если это окно просмотра
+            if (currentViewId !== null) {
+                const bodyEl = document.querySelector('.view-body');
+                if (bodyEl) {
+                    const scrollPos = bodyEl.parentElement.scrollTop || 0;
+                    localStorage.setItem(`scrollPos_${currentViewId}`, scrollPos);
+                }
+            }
             currentViewId = null;
             closeSettingsPopup();
             closeSharePopup();
@@ -1607,19 +1732,22 @@
         document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
 
         // ======================================================================
-        // 12. ДОБАВЛЕНИЕ / РЕДАКТИРОВАНИЕ (с показом предупреждения после 2-го)
+        // 13. ДОБАВЛЕНИЕ / РЕДАКТИРОВАНИЕ (с тегами)
         // ======================================================================
         function openAddModal(editData = null) {
             const isEdit = !!editData;
             const title = isEdit ? editData.title : '';
             const author = isEdit ? editData.author : '';
             const content = isEdit ? editData.content : '';
+            const tags = isEdit ? editData.tags : '';
 
             const html = `
                 <label>Название книги</label>
                 <input id="editTitle" value="${escapeHtml(title)}" placeholder="Например: 7 навыков высокоэффективных людей">
                 <label>Автор</label>
                 <input id="editAuthor" value="${escapeHtml(author)}" placeholder="Например: Стивен Кови">
+                <label>Теги (через запятую)</label>
+                <input id="editTags" value="${escapeHtml(tags)}" placeholder="Например: бизнес, психология, лидерство">
                 <label>Текст конспекта (HTML-разметка)</label>
                 <textarea id="editContent" placeholder="Вставьте HTML-код конспекта...">${escapeHtml(content)}</textarea>
                 <div class="helper">Поддерживается HTML: &lt;h1&gt;, &lt;h2&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;ol&gt;, &lt;blockquote&gt; и др. При вставке целой страницы обёртка будет удалена автоматически.</div>
@@ -1638,6 +1766,7 @@
             document.getElementById('modalSaveBtn').addEventListener('click', async () => {
                 const title = document.getElementById('editTitle').value.trim();
                 const author = document.getElementById('editAuthor').value.trim();
+                const tags = document.getElementById('editTags').value.trim();
                 let content = document.getElementById('editContent').value.trim();
 
                 if (!title) { showToast('❌ Введите название'); return; }
@@ -1645,7 +1774,7 @@
 
                 content = cleanHtmlContent(content);
 
-                const data = { title, author, content, updatedAt: Date.now() };
+                const data = { title, author, tags, content, updatedAt: Date.now() };
 
                 if (isEdit && editId) {
                     await updateConspect(editId, data);
@@ -1673,7 +1802,7 @@
         }
 
         // ======================================================================
-        // 13. ПРОСМОТР КОНСПЕКТА
+        // 14. ПРОСМОТР КОНСПЕКТА (с восстановлением позиции)
         // ======================================================================
         async function openViewModal(id) {
             const all = await getAllConspects();
@@ -1685,16 +1814,70 @@
                 <div class="view-content">
                     <div class="view-title">${escapeHtml(item.title)}</div>
                     <div class="view-author">${escapeHtml(item.author || 'Автор неизвестен')}</div>
+                    ${item.tags ? `<div class="tags" style="margin-bottom:12px;">${item.tags.split(',').map(t => `<span class="tag">${escapeHtml(t.trim())}</span>`).join('')}</div>` : ''}
                     <div class="view-body">${item.content || '<i>Нет содержимого</i>'}</div>
                     <div class="view-actions">
                         <button class="export-html" data-id="${item.id}">📄 Экспорт HTML</button>
                         <button class="export-txt" data-id="${item.id}">📄 Экспорт TXT</button>
+                        <button class="export-md" data-id="${item.id}">📄 Экспорт MD</button>
                         <button class="share-action-btn" data-id="${item.id}" id="viewShareBtn">📤 Поделиться</button>
                     </div>
                 </div>
             `;
 
             openModal(html, '', '📖 Чтение');
+
+            // Восстанавливаем позицию прокрутки, если есть
+            const savedScroll = localStorage.getItem(`scrollPos_${id}`);
+            if (savedScroll !== null && parseInt(savedScroll) > 0) {
+                // Показываем выбор
+                const bodyEl = document.querySelector('.view-body');
+                if (bodyEl) {
+                    const parent = bodyEl.parentElement;
+                    // Небольшое окошко выбора
+                    const choiceHtml = `
+                        <div style="background:#f8f6f0; padding:12px 16px; border-radius:8px; margin-bottom:12px; display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap; border:1px solid #ddd;">
+                            <span style="font-size:0.95rem;">📌 Вы были на позиции ${Math.round(parseInt(savedScroll) / 10)}% текста. Продолжить?</span>
+                            <div style="display:flex; gap:8px;">
+                                <button id="scrollStartBtn" class="btn-secondary" style="padding:4px 14px; font-size:0.85rem;">С начала</button>
+                                <button id="scrollContinueBtn" class="btn-primary" style="padding:4px 14px; font-size:0.85rem;">Продолжить</button>
+                            </div>
+                        </div>
+                    `;
+                    // Вставляем перед view-body
+                    const viewContent = document.querySelector('.view-content');
+                    if (viewContent) {
+                        // Вставляем после автора, но перед view-body
+                        const authorEl = viewContent.querySelector('.view-author');
+                        if (authorEl) {
+                            authorEl.insertAdjacentHTML('afterend', choiceHtml);
+                        }
+                    }
+
+                    document.getElementById('scrollStartBtn')?.addEventListener('click', () => {
+                        parent.scrollTop = 0;
+                        document.querySelector('.view-content > div:first-child')?.remove();
+                        localStorage.removeItem(`scrollPos_${id}`);
+                    });
+                    document.getElementById('scrollContinueBtn')?.addEventListener('click', () => {
+                        parent.scrollTop = parseInt(savedScroll);
+                        document.querySelector('.view-content > div:first-child')?.remove();
+                        // Не удаляем позицию, чтобы при следующем открытии опять спросить
+                    });
+                    // Автоматически скрываем через 5 секунд (переход в начало)
+                    setTimeout(() => {
+                        const choiceDiv = document.querySelector('.view-content > div:first-child');
+                        if (choiceDiv && choiceDiv.id !== '') { // грубо, но работает
+                            choiceDiv.remove();
+                        }
+                        // Если пользователь не выбрал, начинаем с начала
+                        if (parent.scrollTop === 0 && localStorage.getItem(`scrollPos_${id}`) !== null) {
+                            parent.scrollTop = 0;
+                            localStorage.removeItem(`scrollPos_${id}`);
+                        }
+                    }, 8000);
+                }
+            }
 
             setTimeout(() => {
                 applyTextSettings();
@@ -1708,13 +1891,17 @@
                 exportSingleTXT(item);
             });
 
+            document.querySelector('.export-md')?.addEventListener('click', () => {
+                exportSingleMD(item);
+            });
+
             document.getElementById('viewShareBtn')?.addEventListener('click', () => {
                 shareConspect(item);
             });
         }
 
         // ======================================================================
-        // 14. ЭКСПОРТ
+        // 15. ЭКСПОРТ
         // ======================================================================
         function exportSingleHTML(item) {
             const html = `<!DOCTYPE html>
@@ -1726,6 +1913,7 @@
         <body>
         <h1>${escapeHtml(item.title)}</h1>
         <div class="author">${escapeHtml(item.author || 'Автор неизвестен')}</div>
+        ${item.tags ? `<p><strong>Теги:</strong> ${escapeHtml(item.tags)}</p>` : ''}
         ${item.content || ''}
         <hr>
         <p style="color:#8a8a8a;font-size:0.9rem;">Создано: ${formatDate(item.createdAt)}</p>
@@ -1738,10 +1926,21 @@
 
         function exportSingleTXT(item) {
             const plainText = stripHtml(item.content || '');
-            const txt = `${item.title || 'Без названия'}\n${'='.repeat(40)}\nАвтор: ${item.author || 'Неизвестен'}\n\n${plainText}\n\n---\nСоздано: ${formatDate(item.createdAt)}`;
+            const tagsText = item.tags ? `\nТеги: ${item.tags}` : '';
+            const txt = `${item.title || 'Без названия'}\n${'='.repeat(40)}\nАвтор: ${item.author || 'Неизвестен'}${tagsText}\n\n${plainText}\n\n---\nСоздано: ${formatDate(item.createdAt)}`;
 
             downloadFile(txt, `${item.title || 'conspect'}.txt`, 'text/plain');
             showToast('📄 TXT экспортирован');
+            closeSharePopup();
+        }
+
+        function exportSingleMD(item) {
+            const mdContent = htmlToMarkdown(item.content || '');
+            const tagsText = item.tags ? `\n**Теги:** ${item.tags}` : '';
+            const md = `# ${item.title || 'Без названия'}\n\n**Автор:** ${item.author || 'Неизвестен'}${tagsText}\n\n---\n\n${mdContent}\n\n---\n*Создано: ${formatDate(item.createdAt)}*`;
+
+            downloadFile(md, `${item.title || 'conspect'}.md`, 'text/markdown');
+            showToast('📄 MD экспортирован');
             closeSharePopup();
         }
 
@@ -1757,11 +1956,12 @@
         }
 
         // ======================================================================
-        // 15. ПОДЕЛИТЬСЯ
+        // 16. ПОДЕЛИТЬСЯ
         // ======================================================================
         function shareConspect(item) {
             const plainText = stripHtml(item.content || '');
-            const text = `${item.title || 'Без названия'}\nАвтор: ${item.author || 'Неизвестен'}\n\n${plainText}`;
+            const tagsText = item.tags ? `\nТеги: ${item.tags}` : '';
+            const text = `${item.title || 'Без названия'}\nАвтор: ${item.author || 'Неизвестен'}${tagsText}\n\n${plainText}`;
 
             if (navigator.share) {
                 navigator.share({
@@ -1779,7 +1979,7 @@
         }
 
         // ======================================================================
-        // 16. БЭКАП (с обновлением даты)
+        // 17. БЭКАП (с обновлением даты)
         // ======================================================================
         async function exportAllJSON() {
             const all = await getAllConspects();
@@ -1788,7 +1988,6 @@
             downloadFile(json, filename, 'application/json');
             showToast('💾 Бэкап сохранён');
             setLastBackupDate();
-            // Перерисовываем список, чтобы скрыть напоминание
             renderList(
                 document.getElementById('searchInput').value,
                 document.getElementById('sortSelect').value
@@ -1796,7 +1995,7 @@
         }
 
         // ======================================================================
-        // 17. ИМПОРТ JSON
+        // 18. ИМПОРТ JSON
         // ======================================================================
         async function importJSON(file) {
             try {
@@ -1917,7 +2116,7 @@
         }
 
         // ======================================================================
-        // 18. ТЁМНАЯ ТЕМА
+        // 19. ТЁМНАЯ ТЕМА
         // ======================================================================
         function toggleTheme() {
             document.body.classList.toggle('dark');
@@ -1934,7 +2133,7 @@
         }
 
         // ======================================================================
-        // 19. ОБНОВЛЕНИЕ ПО СВАЙПУ
+        // 20. ОБНОВЛЕНИЕ ПО СВАЙПУ
         // ======================================================================
         let touchStartY = 0;
         let isCheckingUpdate = false;
@@ -1991,7 +2190,7 @@
         }, { passive: true });
 
         // ======================================================================
-        // 20. УСТАНОВКА PWA
+        // 21. УСТАНОВКА PWA
         // ======================================================================
         let deferredPrompt;
 
@@ -2018,7 +2217,7 @@
         });
 
         // ======================================================================
-        // 21. УПРАВЛЕНИЕ POPUP (настройки)
+        // 22. УПРАВЛЕНИЕ POPUP (настройки)
         // ======================================================================
         const settingsPopup = document.getElementById('settingsPopup');
         const settingsPopupOverlay = document.getElementById('settingsPopupOverlay');
@@ -2050,7 +2249,7 @@
         settingsPopup.addEventListener('click', (e) => e.stopPropagation());
 
         // ======================================================================
-        // 22. УПРАВЛЕНИЕ POPUP (экспорт / поделиться)
+        // 23. УПРАВЛЕНИЕ POPUP (экспорт / поделиться) с MD
         // ======================================================================
         const sharePopup = document.getElementById('sharePopup');
         const sharePopupOverlay = document.getElementById('sharePopupOverlay');
@@ -2069,6 +2268,7 @@
                 <div class="share-popup-buttons">
                     <button class="share-html" id="sharePopupHtml">📄 Экспорт HTML</button>
                     <button class="share-txt" id="sharePopupTxt">📄 Экспорт TXT</button>
+                    <button class="share-md" id="sharePopupMd">📄 Экспорт MD</button>
                     <button class="share-share" id="sharePopupShare">📤 Поделиться</button>
                 </div>
             `;
@@ -2084,6 +2284,14 @@
             document.getElementById('sharePopupTxt').addEventListener('click', () => {
                 if (currentItem) {
                     exportSingleTXT(currentItem);
+                    closeSharePopup();
+                } else {
+                    showToast('❌ Нет открытого конспекта');
+                }
+            });
+            document.getElementById('sharePopupMd').addEventListener('click', () => {
+                if (currentItem) {
+                    exportSingleMD(currentItem);
                     closeSharePopup();
                 } else {
                     showToast('❌ Нет открытого конспекта');
@@ -2121,7 +2329,7 @@
         sharePopup.addEventListener('click', (e) => e.stopPropagation());
 
         // ======================================================================
-        // 23. ИНИЦИАЛИЗАЦИЯ
+        // 24. ИНИЦИАЛИЗАЦИЯ
         // ======================================================================
         document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('versionDisplay').textContent = APP_VERSION;
@@ -2167,7 +2375,7 @@
         });
 
         // ======================================================================
-        // 24. ИНСТРУКЦИЯ
+        // 25. ИНСТРУКЦИЯ
         // ======================================================================
         document.getElementById('instructionBtn').addEventListener('click', () => {
             document.getElementById('instructionModal').classList.add('active');
@@ -2187,7 +2395,7 @@
         });
 
         // ======================================================================
-        // 25. ПРОМПТ
+        // 26. ПРОМПТ (обновлённый)
         // ======================================================================
         document.getElementById('promptBtn').addEventListener('click', () => {
             const promptText = `Книга: [ВСТАВЬТЕ НАЗВАНИЕ КНИГИ]
@@ -2198,9 +2406,10 @@
            - Введение (о чём книга, основная философия автора, важность темы).
            - Основную часть (разбить по главам или логическим блокам, каждый блок с заголовком, с выделением сути, ключевых тезисов, примеров, если они важны).
            - Заключение (общий вывод, главная мысль, призыв к действию).
+           - Блок с ключевыми цитатами (если есть значимые и не слишком длинные) — перед шпаргалкой.
            - В конце — краткий свод ключевых тезисов (как «шпаргалка»).
 
-        2. Конспект сразу выдай отдельным сообщением в формате кода для самодостаточного HTML-документа, который полностью воспроизводит этот конспект с красивым оформлением, пригодным для чтения в браузере. Требования к HTML:
+        2. Конспект выдай сразу отдельным сообщением в формате кода для самодостаточного HTML-документа, который полностью воспроизводит этот конспект с красивым оформлением, пригодным для чтения в браузере. Не добавляй никаких пояснений или вступительных слов — только чистый HTML-код. Требования к HTML:
            - Используй шрифт семейства Georgia или аналогичный (засечный) для основного текста, размер 16–18px, комфортный межстрочный интервал.
            - Заголовки разных уровней (h1, h2, h3) с чёткими стилями (цвет, отступы, подчёркивания или боковые линии).
            - Используй списки (нумерованные и маркированные) для перечисления пунктов, навыков, шагов.
@@ -2245,7 +2454,7 @@
         }
 
         // ======================================================================
-        // 26. SERVICE WORKER
+        // 27. SERVICE WORKER
         // ======================================================================
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js', { scope: '/book-summary/' })
