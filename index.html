@@ -6,6 +6,7 @@
     <title>Конспекты книг</title>
     <link rel="manifest" href="manifest.json">
     <style>
+        /* (стили остаются без изменений — те же, что в предыдущей версии) */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Georgia', 'Times New Roman', serif;
@@ -95,11 +96,10 @@
         body.dark .header-actions .top-row button:hover {
             background: #4a5a6a;
         }
-        /* Стиль для кнопки установки */
         .header-actions .top-row .install-btn {
             background: #2a7a5a;
             color: white;
-            display: none; /* скрыта по умолчанию */
+            display: none;
         }
         .header-actions .top-row .install-btn:hover {
             background: #1a6a4a;
@@ -357,6 +357,34 @@
         .empty-state .icon {
             font-size: 4rem;
             margin-bottom: 12px;
+        }
+
+        /* Стиль для конспекта-напоминания */
+        .conspect-card.reminder-card {
+            border-left-color: #d4a040;
+            background: #fdf8f0;
+        }
+        body.dark .conspect-card.reminder-card {
+            background: #2a2a20;
+            border-left-color: #d4a040;
+        }
+        .conspect-card.reminder-card .title {
+            color: #8a6a2a;
+        }
+        body.dark .conspect-card.reminder-card .title {
+            color: #d4b06a;
+        }
+        .conspect-card.reminder-card .author {
+            color: #8a7a5a;
+        }
+        body.dark .conspect-card.reminder-card .author {
+            color: #9a8a6a;
+        }
+        .conspect-card.reminder-card .date {
+            color: #b09a7a;
+        }
+        body.dark .conspect-card.reminder-card .date {
+            color: #7a6a5a;
         }
 
         /* ===== МОДАЛЬНОЕ ОКНО ===== */
@@ -1142,8 +1170,10 @@
         // ======================================================================
         // 1. ВЕРСИЯ ПРИЛОЖЕНИЯ
         // ======================================================================
-        const APP_VERSION = 'V1.2.3';
-        // ======================================================================
+        const APP_VERSION = 'V1.2.4';
+        const BACKUP_REMINDER_DAYS = 10;
+        const BACKUP_DATE_KEY = 'lastBackupDate';
+        const BACKUP_WARNING_SHOWN_KEY = 'backupWarningShown';
 
         // ======================================================================
         // 2. РАБОТА С БАЗОЙ ДАННЫХ (IndexedDB)
@@ -1378,7 +1408,79 @@
         }
 
         // ======================================================================
-        // 8. РЕНДЕРИНГ СПИСКА
+        // 8. ФУНКЦИИ ДЛЯ БЭКАПА И НАПОМИНАНИЯ
+        // ======================================================================
+        function getLastBackupDate() {
+            const date = localStorage.getItem(BACKUP_DATE_KEY);
+            return date ? new Date(date) : null;
+        }
+
+        function setLastBackupDate() {
+            localStorage.setItem(BACKUP_DATE_KEY, new Date().toISOString());
+        }
+
+        function shouldShowBackupReminder() {
+            const lastBackup = getLastBackupDate();
+            if (!lastBackup) return true;
+            const daysDiff = (Date.now() - lastBackup.getTime()) / (1000 * 60 * 60 * 24);
+            return daysDiff > BACKUP_REMINDER_DAYS;
+        }
+
+        function isBackupWarningShown() {
+            return localStorage.getItem(BACKUP_WARNING_SHOWN_KEY) === 'true';
+        }
+
+        function setBackupWarningShown() {
+            localStorage.setItem(BACKUP_WARNING_SHOWN_KEY, 'true');
+        }
+
+        // ======================================================================
+        // 9. МОДАЛЬНОЕ ОКНО С ПРЕДУПРЕЖДЕНИЕМ
+        // ======================================================================
+        function openBackupWarningModal(showBackupButton = true) {
+            const html = `
+                <div style="padding: 8px 4px; line-height: 1.8;">
+                    <p style="font-size: 1.3rem; font-weight: 700; margin-bottom: 12px;">💾 Важно!</p>
+                    <p>Все ваши конспекты хранятся <strong>только в кэше браузера</strong> на этом устройстве. При очистке кэша, смене телефона или переустановке приложения они будут <strong>потеряны безвозвратно</strong>.</p>
+                    <p style="margin-top: 12px;"><strong>Настоятельно рекомендуем:</strong></p>
+                    <ol style="margin: 8px 0 12px 20px;">
+                        <li><strong>Регулярно делайте бэкап</strong> (кнопка «Экспорт JSON» внизу страницы) и сохраняйте файл в облако, на диск или в мессенджер (например, в «Избранное» в Telegram).</li>
+                        <li><strong>Храните бэкап-файл в надёжном месте</strong> — он позволит восстановить все конспекты на любом устройстве.</li>
+                        <li><strong>Поделитесь коллекцией с друзьями</strong> — отправьте им бэкап-файл, они смогут импортировать его в своё приложение.</li>
+                    </ol>
+                    <p style="color: #6a6a6a; font-size: 0.9rem; margin-top: 8px;">🔒 <strong>Ваши данные никуда не передаются</strong> — всё остаётся только на вашем устройстве.</p>
+                </div>
+            `;
+
+            const footer = `
+                ${showBackupButton ? `<button class="btn-primary" id="backupNowBtn" style="background:#2a7a5a;">💾 Сделать бэкап сейчас</button>` : ''}
+                <button class="btn-secondary" id="backupWarningCloseBtn">Понятно</button>
+            `;
+
+            openModal(html, footer, '⚠️ Сохранение данных');
+
+            document.getElementById('backupWarningCloseBtn')?.addEventListener('click', () => {
+                closeModal();
+                if (!isBackupWarningShown()) {
+                    setBackupWarningShown();
+                }
+            });
+
+            document.getElementById('backupNowBtn')?.addEventListener('click', async () => {
+                await exportAllJSON();
+                closeModal();
+                if (!isBackupWarningShown()) {
+                    setBackupWarningShown();
+                }
+                renderList(
+                    document.getElementById('searchInput').value,
+                    document.getElementById('sortSelect').value
+                );
+            });
+        }
+
+        // ======================================================================
+        // 10. РЕНДЕРИНГ СПИСКА (с напоминанием)
         // ======================================================================
         async function renderList(filter = '', sortKey = 'date-desc') {
             const list = document.getElementById('conspectList');
@@ -1399,7 +1501,7 @@
 
             const sorted = sortConspects(filtered, sortKey);
 
-            if (sorted.length === 0) {
+            if (sorted.length === 0 && !shouldShowBackupReminder()) {
                 list.innerHTML = `
                     <div class="empty-state">
                         <div class="icon">📖</div>
@@ -1409,7 +1511,7 @@
                 return;
             }
 
-            list.innerHTML = sorted.map(c => `
+            let html = sorted.map(c => `
                 <div class="conspect-card" data-id="${c.id}">
                     <div class="title">${escapeHtml(c.title || 'Без названия')}</div>
                     <div class="author">${escapeHtml(c.author || 'Автор неизвестен')}</div>
@@ -1423,7 +1525,24 @@
                 </div>
             `).join('');
 
-            list.querySelectorAll('.conspect-card').forEach(el => {
+            // Добавляем карточку-напоминание, если нужно
+            if (shouldShowBackupReminder()) {
+                const reminderCard = `
+                    <div class="conspect-card reminder-card" id="backupReminderCard">
+                        <div class="title">⚠️ Сделайте бэкап конспектов</div>
+                        <div class="author">Нажмите, чтобы узнать, почему это важно</div>
+                        <div class="card-bottom">
+                            <span class="date">Напоминание</span>
+                        </div>
+                    </div>
+                `;
+                html = reminderCard + html;
+            }
+
+            list.innerHTML = html;
+
+            // Обработчики для обычных карточек
+            list.querySelectorAll('.conspect-card:not(.reminder-card)').forEach(el => {
                 el.addEventListener('click', (e) => {
                     if (e.target.closest('.card-actions')) return;
                     const id = Number(el.dataset.id);
@@ -1431,6 +1550,12 @@
                 });
             });
 
+            // Обработчик для карточки-напоминания
+            document.getElementById('backupReminderCard')?.addEventListener('click', () => {
+                openBackupWarningModal(true);
+            });
+
+            // Кнопки редактирования и удаления
             list.querySelectorAll('.edit-btn').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
                     e.stopPropagation();
@@ -1458,7 +1583,7 @@
         }
 
         // ======================================================================
-        // 9. МОДАЛЬНОЕ ОКНО
+        // 11. МОДАЛЬНОЕ ОКНО (общее)
         // ======================================================================
         function openModal(html, footerHtml, title = 'Конспект') {
             document.getElementById('modalTitle').textContent = title;
@@ -1482,7 +1607,7 @@
         document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
 
         // ======================================================================
-        // 10. ДОБАВЛЕНИЕ / РЕДАКТИРОВАНИЕ
+        // 12. ДОБАВЛЕНИЕ / РЕДАКТИРОВАНИЕ (с показом предупреждения после 2-го)
         // ======================================================================
         function openAddModal(editData = null) {
             const isEdit = !!editData;
@@ -1529,6 +1654,14 @@
                     data.createdAt = Date.now();
                     await addConspect(data);
                     showToast('✅ Конспект добавлен');
+
+                    // Проверяем, нужно ли показать предупреждение
+                    const all = await getAllConspects();
+                    if (all.length === 2 && !isBackupWarningShown()) {
+                        setTimeout(() => {
+                            openBackupWarningModal(true);
+                        }, 500);
+                    }
                 }
 
                 closeModal();
@@ -1540,7 +1673,7 @@
         }
 
         // ======================================================================
-        // 11. ПРОСМОТР КОНСПЕКТА
+        // 13. ПРОСМОТР КОНСПЕКТА
         // ======================================================================
         async function openViewModal(id) {
             const all = await getAllConspects();
@@ -1581,7 +1714,7 @@
         }
 
         // ======================================================================
-        // 12. ЭКСПОРТ
+        // 14. ЭКСПОРТ
         // ======================================================================
         function exportSingleHTML(item) {
             const html = `<!DOCTYPE html>
@@ -1624,7 +1757,7 @@
         }
 
         // ======================================================================
-        // 13. ПОДЕЛИТЬСЯ
+        // 15. ПОДЕЛИТЬСЯ
         // ======================================================================
         function shareConspect(item) {
             const plainText = stripHtml(item.content || '');
@@ -1646,7 +1779,7 @@
         }
 
         // ======================================================================
-        // 14. БЭКАП
+        // 16. БЭКАП (с обновлением даты)
         // ======================================================================
         async function exportAllJSON() {
             const all = await getAllConspects();
@@ -1654,10 +1787,16 @@
             const filename = `conspects_backup_${formatDateForFilename()}.json`;
             downloadFile(json, filename, 'application/json');
             showToast('💾 Бэкап сохранён');
+            setLastBackupDate();
+            // Перерисовываем список, чтобы скрыть напоминание
+            renderList(
+                document.getElementById('searchInput').value,
+                document.getElementById('sortSelect').value
+            );
         }
 
         // ======================================================================
-        // 15. ИМПОРТ JSON
+        // 17. ИМПОРТ JSON
         // ======================================================================
         async function importJSON(file) {
             try {
@@ -1778,7 +1917,7 @@
         }
 
         // ======================================================================
-        // 16. ТЁМНАЯ ТЕМА
+        // 18. ТЁМНАЯ ТЕМА
         // ======================================================================
         function toggleTheme() {
             document.body.classList.toggle('dark');
@@ -1795,7 +1934,7 @@
         }
 
         // ======================================================================
-        // 17. ОБНОВЛЕНИЕ ПО СВАЙПУ
+        // 19. ОБНОВЛЕНИЕ ПО СВАЙПУ
         // ======================================================================
         let touchStartY = 0;
         let isCheckingUpdate = false;
@@ -1852,7 +1991,7 @@
         }, { passive: true });
 
         // ======================================================================
-        // 18. УСТАНОВКА PWA
+        // 20. УСТАНОВКА PWA
         // ======================================================================
         let deferredPrompt;
 
@@ -1879,7 +2018,7 @@
         });
 
         // ======================================================================
-        // 19. УПРАВЛЕНИЕ POPUP (настройки)
+        // 21. УПРАВЛЕНИЕ POPUP (настройки)
         // ======================================================================
         const settingsPopup = document.getElementById('settingsPopup');
         const settingsPopupOverlay = document.getElementById('settingsPopupOverlay');
@@ -1911,7 +2050,7 @@
         settingsPopup.addEventListener('click', (e) => e.stopPropagation());
 
         // ======================================================================
-        // 20. УПРАВЛЕНИЕ POPUP (экспорт / поделиться)
+        // 22. УПРАВЛЕНИЕ POPUP (экспорт / поделиться)
         // ======================================================================
         const sharePopup = document.getElementById('sharePopup');
         const sharePopupOverlay = document.getElementById('sharePopupOverlay');
@@ -1982,7 +2121,7 @@
         sharePopup.addEventListener('click', (e) => e.stopPropagation());
 
         // ======================================================================
-        // 21. ИНИЦИАЛИЗАЦИЯ
+        // 23. ИНИЦИАЛИЗАЦИЯ
         // ======================================================================
         document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('versionDisplay').textContent = APP_VERSION;
@@ -2028,7 +2167,7 @@
         });
 
         // ======================================================================
-        // 22. ИНСТРУКЦИЯ
+        // 24. ИНСТРУКЦИЯ
         // ======================================================================
         document.getElementById('instructionBtn').addEventListener('click', () => {
             document.getElementById('instructionModal').classList.add('active');
@@ -2048,7 +2187,7 @@
         });
 
         // ======================================================================
-        // 23. ПРОМПТ
+        // 25. ПРОМПТ
         // ======================================================================
         document.getElementById('promptBtn').addEventListener('click', () => {
             const promptText = `Книга: [ВСТАВЬТЕ НАЗВАНИЕ КНИГИ]
@@ -2106,7 +2245,7 @@
         }
 
         // ======================================================================
-        // 24. SERVICE WORKER
+        // 26. SERVICE WORKER
         // ======================================================================
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js', { scope: '/book-summary/' })
