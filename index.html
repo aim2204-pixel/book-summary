@@ -1827,7 +1827,6 @@
         // 14. АВТОСОХРАНЕНИЕ ПОЗИЦИИ ПРИ СКРОЛЛЕ
         // ======================================================================
         let scrollSaveTimer = null;
-        let scrollSaverDisabled = false;
 
         function setupScrollSaver() {
             const modalBody = document.querySelector('.modal-body');
@@ -1837,7 +1836,6 @@
         }
 
         function handleScrollSave() {
-            if (scrollSaverDisabled) return;
             if (currentViewId === null) return;
             if (scrollSaveTimer) {
                 clearTimeout(scrollSaveTimer);
@@ -1862,7 +1860,6 @@
             if (!item) { showToast('❌ Конспект не найден'); return; }
             currentViewId = id;
 
-            // Создаём новый контейнер для прокрутки
             const oldBody = document.querySelector('.view-body');
             if (oldBody) oldBody.remove();
 
@@ -1892,21 +1889,17 @@
                 container.appendChild(newBody);
             }
 
-            // Настраиваем автосохранение
             setTimeout(() => {
                 setupScrollSaver();
             }, 100);
 
-            // Применяем настройки текста
             setTimeout(() => {
                 applyTextSettings();
             }, 50);
 
-            // Проверяем сохранённую позицию
             const savedScroll = localStorage.getItem(`scrollPos_${id}`);
             const hasSaved = savedScroll !== null && parseInt(savedScroll) > 0;
 
-            // Управляем видимостью кнопок
             const topBtn = document.getElementById('scrollToTopBtn');
             const continueBtn = document.getElementById('scrollToContinueBtn');
 
@@ -1922,7 +1915,6 @@
                 }
             }
 
-            // Обработчики экспорта
             document.querySelector('.export-html')?.addEventListener('click', () => {
                 exportSingleHTML(item);
             });
@@ -1941,66 +1933,44 @@
         }
 
         // ======================================================================
-        // 16. ГЛОБАЛЬНЫЕ ОБРАБОТЧИКИ (один раз) — АГРЕССИВНЫЙ СБРОС
+        // 16. ГЛОБАЛЬНЫЕ ОБРАБОТЧИКИ (финальная версия)
         // ======================================================================
         document.addEventListener('DOMContentLoaded', function() {
+            // Кнопка "Наверх" — использует scrollIntoView для .view-content
             const topBtn = document.getElementById('scrollToTopBtn');
             if (topBtn) {
                 topBtn.addEventListener('click', function(e) {
                     e.preventDefault();
-                    scrollSaverDisabled = true;
 
-                    // 1. Пытаемся найти первый видимый элемент внутри .view-content и скроллить к нему
+                    // Самый надёжный способ — прокрутить первый видимый элемент внутри .view-content
                     const viewContent = document.querySelector('.view-content');
                     if (viewContent) {
-                        const firstChild = viewContent.querySelector('.view-title, .view-author, .view-body, p, h1, h2, h3, div');
-                        if (firstChild) {
-                            firstChild.scrollIntoView({ behavior: 'instant', block: 'start' });
+                        const firstElement = viewContent.querySelector('.view-title, .view-author, .view-body, p, h1, h2, h3, div:not(.view-actions)');
+                        if (firstElement) {
+                            firstElement.scrollIntoView({ behavior: 'instant', block: 'start' });
                         } else {
                             viewContent.scrollIntoView({ behavior: 'instant', block: 'start' });
                         }
                     }
 
-                    // 2. Затем сбрасываем scrollTop у всех кандидатов
-                    const candidates = [
-                        document.querySelector('.modal-body'),
-                        document.querySelector('.view-content'),
-                        document.querySelector('.modal'),
-                        document.documentElement,
-                        document.body
-                    ];
-                    candidates.forEach(el => {
-                        if (el && el.scrollTop !== undefined) {
-                            el.scrollTop = 0;
-                        }
-                    });
-                    window.scrollTo(0, 0);
-
-                    // 3. Повтор через 50 мс
-                    setTimeout(() => {
-                        const modalBody = document.querySelector('.modal-body');
-                        if (modalBody) {
-                            modalBody.scrollTop = 0;
-                            modalBody.dispatchEvent(new Event('scroll'));
-                        }
-                        scrollSaverDisabled = false;
-                    }, 50);
+                    // Дополнительно сбрасываем scrollTop у .modal-body для синхронизации
+                    const modalBody = document.querySelector('.modal-body');
+                    if (modalBody) {
+                        modalBody.scrollTop = 0;
+                    }
 
                     showToast('⬆ Начало конспекта');
                 });
             }
 
+            // Кнопка "Продолжить"
             const continueBtn = document.getElementById('scrollToContinueBtn');
             if (continueBtn) {
                 continueBtn.addEventListener('click', function(e) {
                     const container = document.querySelector('.modal-body');
                     const pos = this.dataset.scrollPos;
                     if (container && pos) {
-                        scrollSaverDisabled = true;
                         container.scrollTop = parseInt(pos);
-                        setTimeout(() => {
-                            scrollSaverDisabled = false;
-                        }, 200);
                         showToast('📌 Прокручено к последнему месту');
                     }
                 });
