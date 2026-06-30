@@ -6,7 +6,6 @@
     <title>Конспекты книг</title>
     <link rel="manifest" href="manifest.json">
     <style>
-        /* (все стили без изменений — те же, что в приложенном файле) */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Georgia', 'Times New Roman', serif;
@@ -959,7 +958,7 @@
             display: block;
         }
 
-        /* ===== НОВЫЙ POPUP ДЛЯ ВЫБОРА ПОЗИЦИИ ===== */
+        /* ===== POPUP ВЫБОРА ПОЗИЦИИ ===== */
         .scroll-choice-popup-overlay {
             display: none;
             position: fixed;
@@ -1350,7 +1349,7 @@
         // ======================================================================
         // 1. ВЕРСИЯ ПРИЛОЖЕНИЯ
         // ======================================================================
-        const APP_VERSION = 'V1.2.5.3';
+        const APP_VERSION = 'V1.2.5.4';
         const BACKUP_REMINDER_DAYS = 10;
         const BACKUP_DATE_KEY = 'lastBackupDate';
         const BACKUP_WARNING_SHOWN_KEY = 'backupWarningShown';
@@ -1501,7 +1500,6 @@
         let conspects = [];
         let currentViewId = null;
         let editId = null;
-        let pendingScrollChoiceId = null; // для хранения id конспекта, для которого ожидается выбор
 
         // ======================================================================
         // 7. НАСТРОЙКИ ОТОБРАЖЕНИЯ ТЕКСТА
@@ -1826,11 +1824,14 @@
         function closeModal() {
             document.getElementById('modalOverlay').classList.remove('active');
             editId = null;
+            // Сохраняем позицию в любом случае (на случай, если скролл-сохранение не сработало)
             if (currentViewId !== null) {
                 const bodyEl = document.querySelector('.view-body');
                 if (bodyEl) {
                     const scrollPos = bodyEl.parentElement.scrollTop || 0;
-                    localStorage.setItem(`scrollPos_${currentViewId}`, scrollPos);
+                    if (scrollPos > 0) {
+                        localStorage.setItem(`scrollPos_${currentViewId}`, scrollPos);
+                    }
                 }
             }
             currentViewId = null;
@@ -1933,7 +1934,7 @@
             scrollChoicePopup.classList.remove('active');
             scrollChoiceOverlay.classList.remove('active');
             if (scrollChoiceResolve) {
-                scrollChoiceResolve('start'); // по умолчанию "с начала", если закрыли без выбора
+                scrollChoiceResolve('start');
                 scrollChoiceResolve = null;
             }
         }
@@ -1955,14 +1956,34 @@
         });
 
         scrollChoiceClose.addEventListener('click', closeScrollChoicePopup);
-        scrollChoiceOverlay.addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) {
-                closeScrollChoicePopup(); // закрытие по клику на оверлей (но можно и запретить, если нужно)
-            }
-        });
+
+        // Закрытие по клику на оверлей отключено, чтобы не мешать выбору
 
         // ======================================================================
-        // 15. ПРОСМОТР КОНСПЕКТА (с popup выбора позиции)
+        // 15. АВТОСОХРАНЕНИЕ ПОЗИЦИИ ПРИ СКРОЛЛЕ (НОВАЯ ФУНКЦИЯ)
+        // ======================================================================
+        let scrollSaveTimer = null;
+
+        function setupScrollSaver() {
+            const modalBody = document.querySelector('.modal-body');
+            if (!modalBody) return;
+
+            modalBody.addEventListener('scroll', () => {
+                if (currentViewId === null) return;
+                if (scrollSaveTimer) {
+                    clearTimeout(scrollSaveTimer);
+                }
+                scrollSaveTimer = setTimeout(() => {
+                    const scrollPos = modalBody.scrollTop || 0;
+                    if (scrollPos > 0) {
+                        localStorage.setItem(`scrollPos_${currentViewId}`, scrollPos);
+                    }
+                }, 500);
+            });
+        }
+
+        // ======================================================================
+        // 16. ПРОСМОТР КОНСПЕКТА (с popup и автосохранением)
         // ======================================================================
         async function openViewModal(id) {
             const all = await getAllConspects();
@@ -1987,10 +2008,20 @@
 
             openModal(html, '', '📖 Чтение');
 
+            // Сбрасываем прокрутку, чтобы избежать автоматического восстановления
+            const modalBodyEl = document.querySelector('.modal-body');
+            if (modalBodyEl) {
+                modalBodyEl.scrollTop = 0;
+            }
+
+            // Настраиваем автосохранение позиции при скролле
+            setTimeout(() => {
+                setupScrollSaver();
+            }, 100);
+
             // Проверяем сохранённую позицию
             const savedScroll = localStorage.getItem(`scrollPos_${id}`);
             if (savedScroll !== null && parseInt(savedScroll) > 0) {
-                // Открываем popup выбора
                 const choice = await openScrollChoicePopup();
                 const bodyEl = document.querySelector('.view-body');
                 if (bodyEl) {
@@ -1999,7 +2030,7 @@
                         parent.scrollTop = parseInt(savedScroll);
                     } else {
                         parent.scrollTop = 0;
-                        localStorage.removeItem(`scrollPos_${id}`); // удаляем сохранённую позицию при выборе "с начала"
+                        localStorage.removeItem(`scrollPos_${id}`);
                     }
                 }
             }
@@ -2026,7 +2057,7 @@
         }
 
         // ======================================================================
-        // 16. ЭКСПОРТ
+        // 17. ЭКСПОРТ
         // ======================================================================
         function exportSingleHTML(item) {
             const html = `<!DOCTYPE html>
@@ -2081,7 +2112,7 @@
         }
 
         // ======================================================================
-        // 17. ПОДЕЛИТЬСЯ
+        // 18. ПОДЕЛИТЬСЯ
         // ======================================================================
         function shareConspect(item) {
             const plainText = stripHtml(item.content || '');
@@ -2104,7 +2135,7 @@
         }
 
         // ======================================================================
-        // 18. БЭКАП
+        // 19. БЭКАП
         // ======================================================================
         async function exportAllJSON() {
             const all = await getAllConspects();
@@ -2120,7 +2151,7 @@
         }
 
         // ======================================================================
-        // 19. ИМПОРТ JSON
+        // 20. ИМПОРТ JSON
         // ======================================================================
         async function importJSON(file) {
             try {
@@ -2241,7 +2272,7 @@
         }
 
         // ======================================================================
-        // 20. ТЁМНАЯ ТЕМА
+        // 21. ТЁМНАЯ ТЕМА
         // ======================================================================
         function toggleTheme() {
             document.body.classList.toggle('dark');
@@ -2258,7 +2289,7 @@
         }
 
         // ======================================================================
-        // 21. ОБНОВЛЕНИЕ ПО СВАЙПУ
+        // 22. ОБНОВЛЕНИЕ ПО СВАЙПУ
         // ======================================================================
         let touchStartY = 0;
         let isCheckingUpdate = false;
@@ -2315,7 +2346,7 @@
         }, { passive: true });
 
         // ======================================================================
-        // 22. УСТАНОВКА PWA
+        // 23. УСТАНОВКА PWA
         // ======================================================================
         let deferredPrompt;
 
@@ -2342,7 +2373,7 @@
         });
 
         // ======================================================================
-        // 23. УПРАВЛЕНИЕ POPUP (настройки)
+        // 24. УПРАВЛЕНИЕ POPUP (настройки)
         // ======================================================================
         const settingsPopup = document.getElementById('settingsPopup');
         const settingsPopupOverlay = document.getElementById('settingsPopupOverlay');
@@ -2374,7 +2405,7 @@
         settingsPopup.addEventListener('click', (e) => e.stopPropagation());
 
         // ======================================================================
-        // 24. УПРАВЛЕНИЕ POPUP (экспорт / поделиться) с MD
+        // 25. УПРАВЛЕНИЕ POPUP (экспорт / поделиться) с MD
         // ======================================================================
         const sharePopup = document.getElementById('sharePopup');
         const sharePopupOverlay = document.getElementById('sharePopupOverlay');
@@ -2454,7 +2485,7 @@
         sharePopup.addEventListener('click', (e) => e.stopPropagation());
 
         // ======================================================================
-        // 25. ИНИЦИАЛИЗАЦИЯ
+        // 26. ИНИЦИАЛИЗАЦИЯ
         // ======================================================================
         document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('versionDisplay').textContent = APP_VERSION;
@@ -2500,7 +2531,7 @@
         });
 
         // ======================================================================
-        // 26. ИНСТРУКЦИЯ
+        // 27. ИНСТРУКЦИЯ
         // ======================================================================
         document.getElementById('instructionBtn').addEventListener('click', () => {
             document.getElementById('instructionModal').classList.add('active');
@@ -2520,7 +2551,7 @@
         });
 
         // ======================================================================
-        // 27. ПРОМПТ
+        // 28. ПРОМПТ
         // ======================================================================
         document.getElementById('promptBtn').addEventListener('click', () => {
             const promptText = `Книга: [ВСТАВЬТЕ НАЗВАНИЕ КНИГИ]
@@ -2579,7 +2610,7 @@
         }
 
         // ======================================================================
-        // 28. SERVICE WORKER
+        // 29. SERVICE WORKER
         // ======================================================================
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js', { scope: '/book-summary/' })
