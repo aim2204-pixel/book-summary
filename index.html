@@ -19,6 +19,9 @@
             background: #1a1a1e;
             color: #e0e0e0;
         }
+        body.modal-open {
+            overflow: hidden;
+        }
         .container {
             max-width: 700px;
             margin: 0 auto;
@@ -454,9 +457,46 @@
         body.dark .modal-header {
             border-bottom-color: #3a3a40;
         }
-        .modal-header h2 {
+        .modal-header .left-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .modal-header .left-section h2 {
             font-size: 1.1rem;
             font-weight: 700;
+        }
+        .modal-header .left-section .nav-btn {
+            background: transparent;
+            border: 1px solid rgba(0,0,0,0.12);
+            border-radius: 14px;
+            padding: 2px 10px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            cursor: pointer;
+            color: rgba(0,0,0,0.5);
+            transition: 0.2s;
+            font-family: inherit;
+            line-height: 1.6;
+            display: none;
+            opacity: 0.7;
+        }
+        .modal-header .left-section .nav-btn:hover {
+            background: rgba(0,0,0,0.05);
+            border-color: rgba(0,0,0,0.3);
+            opacity: 1;
+        }
+        body.dark .modal-header .left-section .nav-btn {
+            color: rgba(255,255,255,0.5);
+            border-color: rgba(255,255,255,0.12);
+        }
+        body.dark .modal-header .left-section .nav-btn:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.3);
+            opacity: 1;
+        }
+        .modal-header .left-section .nav-btn.visible {
+            display: inline-block;
         }
         .modal-header .header-btns {
             display: flex;
@@ -958,125 +998,6 @@
             display: block;
         }
 
-        /* ===== POPUP ВЫБОРА ПОЗИЦИИ ===== */
-        .scroll-choice-popup-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.3);
-            z-index: 3000;
-        }
-        .scroll-choice-popup-overlay.active {
-            display: block;
-        }
-        .scroll-choice-popup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 24px 28px;
-            border-radius: 16px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-            z-index: 3001;
-            max-width: 360px;
-            width: 90%;
-            text-align: center;
-        }
-        body.dark .scroll-choice-popup {
-            background: #25252b;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-        }
-        .scroll-choice-popup.active {
-            display: block;
-        }
-        .scroll-choice-popup .popup-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 14px;
-        }
-        .scroll-choice-popup .popup-header h3 {
-            font-size: 1.1rem;
-            font-weight: 700;
-        }
-        .scroll-choice-popup .popup-header .close-btn {
-            background: none;
-            border: none;
-            font-size: 1.6rem;
-            cursor: pointer;
-            color: #8a8a8a;
-            padding: 0 4px;
-            line-height: 1;
-        }
-        .scroll-choice-popup .popup-header .close-btn:hover {
-            color: #333;
-        }
-        body.dark .scroll-choice-popup .popup-header .close-btn {
-            color: #6a6a6a;
-        }
-        body.dark .scroll-choice-popup .popup-header .close-btn:hover {
-            color: #ccc;
-        }
-        .scroll-choice-popup .popup-body {
-            margin: 8px 0 16px 0;
-        }
-        .scroll-choice-popup .popup-body p {
-            font-size: 0.95rem;
-            color: #6a6a6a;
-        }
-        body.dark .scroll-choice-popup .popup-body p {
-            color: #9a9a9a;
-        }
-        .scroll-choice-popup .popup-actions {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        .scroll-choice-popup .popup-actions button {
-            padding: 8px 24px;
-            border: none;
-            border-radius: 30px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            font-family: inherit;
-            min-width: 100px;
-        }
-        .scroll-choice-popup .popup-actions .btn-start {
-            background: #ddd;
-            color: #333;
-        }
-        .scroll-choice-popup .popup-actions .btn-start:hover {
-            background: #ccc;
-        }
-        body.dark .scroll-choice-popup .popup-actions .btn-start {
-            background: #3a3a40;
-            color: #ccc;
-        }
-        body.dark .scroll-choice-popup .popup-actions .btn-start:hover {
-            background: #4a4a50;
-        }
-        .scroll-choice-popup .popup-actions .btn-continue {
-            background: #4a7a9c;
-            color: white;
-        }
-        .scroll-choice-popup .popup-actions .btn-continue:hover {
-            background: #36648a;
-        }
-        body.dark .scroll-choice-popup .popup-actions .btn-continue {
-            background: #4a6a7a;
-        }
-        body.dark .scroll-choice-popup .popup-actions .btn-continue:hover {
-            background: #3a5a6a;
-        }
-
         /* ===== БЭКАП ===== */
         .backup-section {
             margin-top: 20px;
@@ -1190,7 +1111,8 @@
             .conspect-card { padding: 12px 14px 10px 14px; }
             .modal-body { padding: 10px 10px 6px 10px; }
             .modal-header { padding: 8px 10px 8px 14px; min-height: 48px; }
-            .modal-header h2 { font-size: 1.0rem; }
+            .modal-header .left-section h2 { font-size: 1.0rem; }
+            .modal-header .left-section .nav-btn { font-size: 0.6rem; padding: 1px 8px; }
             .view-content .view-title { font-size: 1.3rem; }
             .backup-section { flex-direction: column; align-items: stretch; }
             .backup-section .backup-btns { justify-content: center; }
@@ -1206,8 +1128,6 @@
             .modal-header .header-btns .settings-btn {
                 font-size: 1.2rem;
             }
-            .scroll-choice-popup { max-width: 90%; padding: 16px; }
-            .scroll-choice-popup .popup-actions button { min-width: 80px; padding: 6px 16px; }
         }
     </style>
 </head>
@@ -1295,7 +1215,11 @@
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal">
             <div class="modal-header">
-                <h2 id="modalTitle">Новый конспект</h2>
+                <div class="left-section">
+                    <h2 id="modalTitle">Новый конспект</h2>
+                    <button class="nav-btn" id="scrollToTopBtn">⬆ Наверх</button>
+                    <button class="nav-btn" id="scrollToContinueBtn">📌 Продолжить</button>
+                </div>
                 <div class="header-btns">
                     <button class="share-btn" id="sharePopupBtn" title="Поделиться / Экспорт">📤</button>
                     <button class="settings-btn" id="settingsToggleBtn" title="Настройки отображения">⚙️</button>
@@ -1327,29 +1251,13 @@
         <div id="sharePopupContent"></div>
     </div>
 
-    <!-- Popup выбора позиции -->
-    <div class="scroll-choice-popup-overlay" id="scrollChoicePopupOverlay"></div>
-    <div class="scroll-choice-popup" id="scrollChoicePopup">
-        <div class="popup-header">
-            <h3>📌 Продолжить чтение?</h3>
-            <button class="close-btn" id="scrollChoiceClose">✕</button>
-        </div>
-        <div class="popup-body">
-            <p>Вы уже читали этот конспект. Начать с начала или продолжить с последнего места?</p>
-        </div>
-        <div class="popup-actions">
-            <button class="btn-start" id="scrollChoiceStart">С начала</button>
-            <button class="btn-continue" id="scrollChoiceContinue">Продолжить</button>
-        </div>
-    </div>
-
     <div class="toast" id="toast"></div>
 
     <script>
         // ======================================================================
         // 1. ВЕРСИЯ ПРИЛОЖЕНИЯ
         // ======================================================================
-        const APP_VERSION = 'V1.2.5.6';
+        const APP_VERSION = 'V1.3.0';
         const BACKUP_REMINDER_DAYS = 10;
         const BACKUP_DATE_KEY = 'lastBackupDate';
         const BACKUP_WARNING_SHOWN_KEY = 'backupWarningShown';
@@ -1819,25 +1727,25 @@
             document.getElementById('modalBody').innerHTML = html;
             document.getElementById('modalFooter').innerHTML = footerHtml || '';
             document.getElementById('modalOverlay').classList.add('active');
+            document.body.classList.add('modal-open');
         }
 
         function closeModal() {
             document.getElementById('modalOverlay').classList.remove('active');
             editId = null;
-            // Сохраняем позицию при закрытии
             if (currentViewId !== null) {
                 const bodyEl = document.querySelector('.view-body');
                 if (bodyEl) {
                     const scrollPos = bodyEl.parentElement.scrollTop || 0;
                     if (scrollPos > 0) {
                         localStorage.setItem(`scrollPos_${currentViewId}`, scrollPos);
-                        console.log(`[Сохранить] Позиция ${scrollPos} для конспекта ${currentViewId}`);
                     }
                 }
             }
             currentViewId = null;
             closeSettingsPopup();
             closeSharePopup();
+            document.body.classList.remove('modal-open');
         }
 
         document.getElementById('modalOverlay').addEventListener('click', (e) => {
@@ -1916,64 +1824,20 @@
         }
 
         // ======================================================================
-        // 14. УПРАВЛЕНИЕ POPUP ВЫБОРА ПОЗИЦИИ
-        // ======================================================================
-        const scrollChoicePopup = document.getElementById('scrollChoicePopup');
-        const scrollChoiceOverlay = document.getElementById('scrollChoicePopupOverlay');
-        const scrollChoiceClose = document.getElementById('scrollChoiceClose');
-        let scrollChoiceResolve = null;
-
-        function openScrollChoicePopup() {
-            return new Promise((resolve) => {
-                scrollChoiceResolve = resolve;
-                scrollChoicePopup.classList.add('active');
-                scrollChoiceOverlay.classList.add('active');
-            });
-        }
-
-        function closeScrollChoicePopup() {
-            scrollChoicePopup.classList.remove('active');
-            scrollChoiceOverlay.classList.remove('active');
-            if (scrollChoiceResolve) {
-                scrollChoiceResolve('start');
-                scrollChoiceResolve = null;
-            }
-        }
-
-        document.getElementById('scrollChoiceStart').addEventListener('click', () => {
-            if (scrollChoiceResolve) {
-                scrollChoiceResolve('start');
-                scrollChoiceResolve = null;
-            }
-            closeScrollChoicePopup();
-        });
-
-        document.getElementById('scrollChoiceContinue').addEventListener('click', () => {
-            if (scrollChoiceResolve) {
-                scrollChoiceResolve('continue');
-                scrollChoiceResolve = null;
-            }
-            closeScrollChoicePopup();
-        });
-
-        scrollChoiceClose.addEventListener('click', closeScrollChoicePopup);
-        // Закрытие по клику на фон отключено
-
-        // ======================================================================
-        // 15. АВТОСОХРАНЕНИЕ ПОЗИЦИИ ПРИ СКРОЛЛЕ
+        // 14. АВТОСОХРАНЕНИЕ ПОЗИЦИИ ПРИ СКРОЛЛЕ
         // ======================================================================
         let scrollSaveTimer = null;
+        let scrollSaverDisabled = false;
 
         function setupScrollSaver() {
             const modalBody = document.querySelector('.modal-body');
             if (!modalBody) return;
-
-            // Удаляем старый обработчик, чтобы не накапливать
             modalBody.removeEventListener('scroll', handleScrollSave);
             modalBody.addEventListener('scroll', handleScrollSave);
         }
 
         function handleScrollSave() {
+            if (scrollSaverDisabled) return;
             if (currentViewId === null) return;
             if (scrollSaveTimer) {
                 clearTimeout(scrollSaveTimer);
@@ -1984,14 +1848,13 @@
                     const scrollPos = modalBody.scrollTop || 0;
                     if (scrollPos > 0) {
                         localStorage.setItem(`scrollPos_${currentViewId}`, scrollPos);
-                        console.log(`[Скролл] Сохранена позиция ${scrollPos} для конспекта ${currentViewId}`);
                     }
                 }
             }, 500);
         }
 
         // ======================================================================
-        // 16. ПРОСМОТР КОНСПЕКТА (С ПОЛНЫМ ПЕРЕСОЗДАНИЕМ КОНТЕЙНЕРА)
+        // 15. ПРОСМОТР КОНСПЕКТА
         // ======================================================================
         async function openViewModal(id) {
             const all = await getAllConspects();
@@ -1999,23 +1862,19 @@
             if (!item) { showToast('❌ Конспект не найден'); return; }
             currentViewId = id;
 
-            // --- СОЗДАЁМ НОВЫЙ КОНТЕЙНЕР ДЛЯ ПРОКРУТКИ ---
-            // Удаляем старый .view-body, если есть
+            // Создаём новый контейнер для прокрутки
             const oldBody = document.querySelector('.view-body');
             if (oldBody) oldBody.remove();
 
-            // Создаём новый контейнер
             const newBody = document.createElement('div');
             newBody.className = 'view-body';
             newBody.innerHTML = item.content || '<i>Нет содержимого</i>';
 
-            // Формируем HTML для модального окна
             const html = `
                 <div class="view-content">
                     <div class="view-title">${escapeHtml(item.title)}</div>
                     <div class="view-author">${escapeHtml(item.author || 'Автор неизвестен')}</div>
                     ${item.tags ? `<div class="tags" style="margin-bottom:12px;">${item.tags.split(',').map(t => `<span class="tag">${escapeHtml(t.trim())}</span>`).join('')}</div>` : ''}
-                    <!-- Контейнер для нового body -->
                     <div id="viewBodyContainer"></div>
                     <div class="view-actions">
                         <button class="export-html" data-id="${item.id}">📄 Экспорт HTML</button>
@@ -2026,55 +1885,44 @@
                 </div>
             `;
 
-            // Открываем модальное окно
             openModal(html, '', '📖 Чтение');
 
-            // Вставляем новый body в контейнер
             const container = document.getElementById('viewBodyContainer');
             if (container) {
                 container.appendChild(newBody);
             }
 
-            // Сбрасываем прокрутку (на всякий случай)
-            const modalBodyEl = document.querySelector('.modal-body');
-            if (modalBodyEl) {
-                modalBodyEl.scrollTop = 0;
-            }
+            // Настраиваем автосохранение
+            setTimeout(() => {
+                setupScrollSaver();
+            }, 100);
 
             // Применяем настройки текста
             setTimeout(() => {
                 applyTextSettings();
             }, 50);
 
-            // Настраиваем автосохранение при скролле
-            setTimeout(() => {
-                setupScrollSaver();
-            }, 100);
-
             // Проверяем сохранённую позицию
             const savedScroll = localStorage.getItem(`scrollPos_${id}`);
-            console.log(`[Открытие] Конспект ${id}, сохранённая позиция: ${savedScroll || 'нет'}`);
+            const hasSaved = savedScroll !== null && parseInt(savedScroll) > 0;
 
-            if (savedScroll !== null && parseInt(savedScroll) > 0) {
-                // Открываем popup выбора
-                const choice = await openScrollChoicePopup();
-                console.log(`[Выбор] Пользователь выбрал: ${choice}`);
-                if (choice === 'continue') {
-                    // Восстанавливаем позицию
-                    if (modalBodyEl) {
-                        modalBodyEl.scrollTop = parseInt(savedScroll);
-                        console.log(`[Восстановление] Прокрутка к ${savedScroll}`);
-                    }
+            // Управляем видимостью кнопок
+            const topBtn = document.getElementById('scrollToTopBtn');
+            const continueBtn = document.getElementById('scrollToContinueBtn');
+
+            if (topBtn) {
+                topBtn.classList.add('visible');
+            }
+            if (continueBtn) {
+                if (hasSaved) {
+                    continueBtn.classList.add('visible');
+                    continueBtn.dataset.scrollPos = savedScroll;
                 } else {
-                    // Начинаем с начала
-                    if (modalBodyEl) {
-                        modalBodyEl.scrollTop = 0;
-                    }
-                    localStorage.removeItem(`scrollPos_${id}`);
+                    continueBtn.classList.remove('visible');
                 }
             }
 
-            // Обработчики кнопок экспорта
+            // Обработчики экспорта
             document.querySelector('.export-html')?.addEventListener('click', () => {
                 exportSingleHTML(item);
             });
@@ -2091,6 +1939,73 @@
                 shareConspect(item);
             });
         }
+
+        // ======================================================================
+        // 16. ГЛОБАЛЬНЫЕ ОБРАБОТЧИКИ (один раз) — АГРЕССИВНЫЙ СБРОС
+        // ======================================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const topBtn = document.getElementById('scrollToTopBtn');
+            if (topBtn) {
+                topBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    scrollSaverDisabled = true;
+
+                    // 1. Пытаемся найти первый видимый элемент внутри .view-content и скроллить к нему
+                    const viewContent = document.querySelector('.view-content');
+                    if (viewContent) {
+                        const firstChild = viewContent.querySelector('.view-title, .view-author, .view-body, p, h1, h2, h3, div');
+                        if (firstChild) {
+                            firstChild.scrollIntoView({ behavior: 'instant', block: 'start' });
+                        } else {
+                            viewContent.scrollIntoView({ behavior: 'instant', block: 'start' });
+                        }
+                    }
+
+                    // 2. Затем сбрасываем scrollTop у всех кандидатов
+                    const candidates = [
+                        document.querySelector('.modal-body'),
+                        document.querySelector('.view-content'),
+                        document.querySelector('.modal'),
+                        document.documentElement,
+                        document.body
+                    ];
+                    candidates.forEach(el => {
+                        if (el && el.scrollTop !== undefined) {
+                            el.scrollTop = 0;
+                        }
+                    });
+                    window.scrollTo(0, 0);
+
+                    // 3. Повтор через 50 мс
+                    setTimeout(() => {
+                        const modalBody = document.querySelector('.modal-body');
+                        if (modalBody) {
+                            modalBody.scrollTop = 0;
+                            modalBody.dispatchEvent(new Event('scroll'));
+                        }
+                        scrollSaverDisabled = false;
+                    }, 50);
+
+                    showToast('⬆ Начало конспекта');
+                });
+            }
+
+            const continueBtn = document.getElementById('scrollToContinueBtn');
+            if (continueBtn) {
+                continueBtn.addEventListener('click', function(e) {
+                    const container = document.querySelector('.modal-body');
+                    const pos = this.dataset.scrollPos;
+                    if (container && pos) {
+                        scrollSaverDisabled = true;
+                        container.scrollTop = parseInt(pos);
+                        setTimeout(() => {
+                            scrollSaverDisabled = false;
+                        }, 200);
+                        showToast('📌 Прокручено к последнему месту');
+                    }
+                });
+            }
+        });
 
         // ======================================================================
         // 17. ЭКСПОРТ
@@ -2524,11 +2439,7 @@
         // 26. ИНИЦИАЛИЗАЦИЯ
         // ======================================================================
         document.addEventListener('DOMContentLoaded', async () => {
-            // Отключаем автоматическое восстановление прокрутки браузером
-            // Это действует только в рамках нашего сайта (origin)
             history.scrollRestoration = 'manual';
-            console.log('[Инициализация] scrollRestoration = manual');
-
             document.getElementById('versionDisplay').textContent = APP_VERSION;
 
             await openDB();
