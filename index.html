@@ -678,73 +678,6 @@
             background: #3a3a40;
         }
 
-        /* Стиль для блока выбора позиции (встроенного) */
-        .scroll-choice-inline {
-            background: #fdf6e3;
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            align-items: center;
-            justify-content: space-between;
-            border: 2px solid #d4a040;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        body.dark .scroll-choice-inline {
-            background: #2a2a20;
-            border-color: #d4a040;
-        }
-        .scroll-choice-inline .message {
-            font-size: 0.95rem;
-            color: #1e1e1e;
-        }
-        body.dark .scroll-choice-inline .message {
-            color: #e0e0e0;
-        }
-        .scroll-choice-inline .buttons {
-            display: flex;
-            gap: 8px;
-        }
-        .scroll-choice-inline .buttons button {
-            padding: 4px 14px;
-            border: none;
-            border-radius: 30px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            font-family: inherit;
-        }
-        .scroll-choice-inline .btn-start {
-            background: #ddd;
-            color: #333;
-        }
-        .scroll-choice-inline .btn-start:hover {
-            background: #ccc;
-        }
-        body.dark .scroll-choice-inline .btn-start {
-            background: #3a3a40;
-            color: #ccc;
-        }
-        body.dark .scroll-choice-inline .btn-start:hover {
-            background: #4a4a50;
-        }
-        .scroll-choice-inline .btn-continue {
-            background: #4a7a9c;
-            color: white;
-        }
-        .scroll-choice-inline .btn-continue:hover {
-            background: #36648a;
-        }
-        body.dark .scroll-choice-inline .btn-continue {
-            background: #4a6a7a;
-        }
-        body.dark .scroll-choice-inline .btn-continue:hover {
-            background: #3a5a6a;
-        }
-
         .view-actions {
             display: flex;
             gap: 8px;
@@ -1025,6 +958,125 @@
             display: block;
         }
 
+        /* ===== POPUP ВЫБОРА ПОЗИЦИИ ===== */
+        .scroll-choice-popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+            z-index: 3000;
+        }
+        .scroll-choice-popup-overlay.active {
+            display: block;
+        }
+        .scroll-choice-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 24px 28px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            z-index: 3001;
+            max-width: 360px;
+            width: 90%;
+            text-align: center;
+        }
+        body.dark .scroll-choice-popup {
+            background: #25252b;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+        }
+        .scroll-choice-popup.active {
+            display: block;
+        }
+        .scroll-choice-popup .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        .scroll-choice-popup .popup-header h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .scroll-choice-popup .popup-header .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.6rem;
+            cursor: pointer;
+            color: #8a8a8a;
+            padding: 0 4px;
+            line-height: 1;
+        }
+        .scroll-choice-popup .popup-header .close-btn:hover {
+            color: #333;
+        }
+        body.dark .scroll-choice-popup .popup-header .close-btn {
+            color: #6a6a6a;
+        }
+        body.dark .scroll-choice-popup .popup-header .close-btn:hover {
+            color: #ccc;
+        }
+        .scroll-choice-popup .popup-body {
+            margin: 8px 0 16px 0;
+        }
+        .scroll-choice-popup .popup-body p {
+            font-size: 0.95rem;
+            color: #6a6a6a;
+        }
+        body.dark .scroll-choice-popup .popup-body p {
+            color: #9a9a9a;
+        }
+        .scroll-choice-popup .popup-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .scroll-choice-popup .popup-actions button {
+            padding: 8px 24px;
+            border: none;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: inherit;
+            min-width: 100px;
+        }
+        .scroll-choice-popup .popup-actions .btn-start {
+            background: #ddd;
+            color: #333;
+        }
+        .scroll-choice-popup .popup-actions .btn-start:hover {
+            background: #ccc;
+        }
+        body.dark .scroll-choice-popup .popup-actions .btn-start {
+            background: #3a3a40;
+            color: #ccc;
+        }
+        body.dark .scroll-choice-popup .popup-actions .btn-start:hover {
+            background: #4a4a50;
+        }
+        .scroll-choice-popup .popup-actions .btn-continue {
+            background: #4a7a9c;
+            color: white;
+        }
+        .scroll-choice-popup .popup-actions .btn-continue:hover {
+            background: #36648a;
+        }
+        body.dark .scroll-choice-popup .popup-actions .btn-continue {
+            background: #4a6a7a;
+        }
+        body.dark .scroll-choice-popup .popup-actions .btn-continue:hover {
+            background: #3a5a6a;
+        }
+
         /* ===== БЭКАП ===== */
         .backup-section {
             margin-top: 20px;
@@ -1154,6 +1206,8 @@
             .modal-header .header-btns .settings-btn {
                 font-size: 1.2rem;
             }
+            .scroll-choice-popup { max-width: 90%; padding: 16px; }
+            .scroll-choice-popup .popup-actions button { min-width: 80px; padding: 6px 16px; }
         }
     </style>
 </head>
@@ -1273,13 +1327,29 @@
         <div id="sharePopupContent"></div>
     </div>
 
+    <!-- Popup выбора позиции -->
+    <div class="scroll-choice-popup-overlay" id="scrollChoicePopupOverlay"></div>
+    <div class="scroll-choice-popup" id="scrollChoicePopup">
+        <div class="popup-header">
+            <h3>📌 Продолжить чтение?</h3>
+            <button class="close-btn" id="scrollChoiceClose">✕</button>
+        </div>
+        <div class="popup-body">
+            <p>Вы уже читали этот конспект. Начать с начала или продолжить с последнего места?</p>
+        </div>
+        <div class="popup-actions">
+            <button class="btn-start" id="scrollChoiceStart">С начала</button>
+            <button class="btn-continue" id="scrollChoiceContinue">Продолжить</button>
+        </div>
+    </div>
+
     <div class="toast" id="toast"></div>
 
     <script>
         // ======================================================================
         // 1. ВЕРСИЯ ПРИЛОЖЕНИЯ
         // ======================================================================
-        const APP_VERSION = 'V1.2.5.5';
+        const APP_VERSION = 'V1.2.5.6';
         const BACKUP_REMINDER_DAYS = 10;
         const BACKUP_DATE_KEY = 'lastBackupDate';
         const BACKUP_WARNING_SHOWN_KEY = 'backupWarningShown';
@@ -1846,7 +1916,51 @@
         }
 
         // ======================================================================
-        // 14. АВТОСОХРАНЕНИЕ ПОЗИЦИИ ПРИ СКРОЛЛЕ
+        // 14. УПРАВЛЕНИЕ POPUP ВЫБОРА ПОЗИЦИИ
+        // ======================================================================
+        const scrollChoicePopup = document.getElementById('scrollChoicePopup');
+        const scrollChoiceOverlay = document.getElementById('scrollChoicePopupOverlay');
+        const scrollChoiceClose = document.getElementById('scrollChoiceClose');
+        let scrollChoiceResolve = null;
+
+        function openScrollChoicePopup() {
+            return new Promise((resolve) => {
+                scrollChoiceResolve = resolve;
+                scrollChoicePopup.classList.add('active');
+                scrollChoiceOverlay.classList.add('active');
+            });
+        }
+
+        function closeScrollChoicePopup() {
+            scrollChoicePopup.classList.remove('active');
+            scrollChoiceOverlay.classList.remove('active');
+            if (scrollChoiceResolve) {
+                scrollChoiceResolve('start');
+                scrollChoiceResolve = null;
+            }
+        }
+
+        document.getElementById('scrollChoiceStart').addEventListener('click', () => {
+            if (scrollChoiceResolve) {
+                scrollChoiceResolve('start');
+                scrollChoiceResolve = null;
+            }
+            closeScrollChoicePopup();
+        });
+
+        document.getElementById('scrollChoiceContinue').addEventListener('click', () => {
+            if (scrollChoiceResolve) {
+                scrollChoiceResolve('continue');
+                scrollChoiceResolve = null;
+            }
+            closeScrollChoicePopup();
+        });
+
+        scrollChoiceClose.addEventListener('click', closeScrollChoicePopup);
+        // Закрытие по клику на фон отключено
+
+        // ======================================================================
+        // 15. АВТОСОХРАНЕНИЕ ПОЗИЦИИ ПРИ СКРОЛЛЕ
         // ======================================================================
         let scrollSaveTimer = null;
 
@@ -1877,7 +1991,7 @@
         }
 
         // ======================================================================
-        // 15. ПРОСМОТР КОНСПЕКТА (с встроенным выбором)
+        // 16. ПРОСМОТР КОНСПЕКТА (С ПОЛНЫМ ПЕРЕСОЗДАНИЕМ КОНТЕЙНЕРА)
         // ======================================================================
         async function openViewModal(id) {
             const all = await getAllConspects();
@@ -1885,12 +1999,24 @@
             if (!item) { showToast('❌ Конспект не найден'); return; }
             currentViewId = id;
 
+            // --- СОЗДАЁМ НОВЫЙ КОНТЕЙНЕР ДЛЯ ПРОКРУТКИ ---
+            // Удаляем старый .view-body, если есть
+            const oldBody = document.querySelector('.view-body');
+            if (oldBody) oldBody.remove();
+
+            // Создаём новый контейнер
+            const newBody = document.createElement('div');
+            newBody.className = 'view-body';
+            newBody.innerHTML = item.content || '<i>Нет содержимого</i>';
+
+            // Формируем HTML для модального окна
             const html = `
                 <div class="view-content">
                     <div class="view-title">${escapeHtml(item.title)}</div>
                     <div class="view-author">${escapeHtml(item.author || 'Автор неизвестен')}</div>
                     ${item.tags ? `<div class="tags" style="margin-bottom:12px;">${item.tags.split(',').map(t => `<span class="tag">${escapeHtml(t.trim())}</span>`).join('')}</div>` : ''}
-                    <div class="view-body">${item.content || '<i>Нет содержимого</i>'}</div>
+                    <!-- Контейнер для нового body -->
+                    <div id="viewBodyContainer"></div>
                     <div class="view-actions">
                         <button class="export-html" data-id="${item.id}">📄 Экспорт HTML</button>
                         <button class="export-txt" data-id="${item.id}">📄 Экспорт TXT</button>
@@ -1900,69 +2026,55 @@
                 </div>
             `;
 
+            // Открываем модальное окно
             openModal(html, '', '📖 Чтение');
 
-            // Настраиваем автосохранение позиции при скролле
-            setTimeout(() => {
-                setupScrollSaver();
-            }, 100);
+            // Вставляем новый body в контейнер
+            const container = document.getElementById('viewBodyContainer');
+            if (container) {
+                container.appendChild(newBody);
+            }
 
-            // Сбрасываем прокрутку, чтобы избежать автоматического восстановления
+            // Сбрасываем прокрутку (на всякий случай)
             const modalBodyEl = document.querySelector('.modal-body');
             if (modalBodyEl) {
                 modalBodyEl.scrollTop = 0;
             }
+
+            // Применяем настройки текста
+            setTimeout(() => {
+                applyTextSettings();
+            }, 50);
+
+            // Настраиваем автосохранение при скролле
+            setTimeout(() => {
+                setupScrollSaver();
+            }, 100);
 
             // Проверяем сохранённую позицию
             const savedScroll = localStorage.getItem(`scrollPos_${id}`);
             console.log(`[Открытие] Конспект ${id}, сохранённая позиция: ${savedScroll || 'нет'}`);
 
             if (savedScroll !== null && parseInt(savedScroll) > 0) {
-                // Вставляем блок выбора в начало контента (после автора)
-                const viewContent = document.querySelector('.view-content');
-                const authorEl = viewContent?.querySelector('.view-author');
-                const scrollChoiceHtml = `
-                    <div id="scrollChoiceInline" class="scroll-choice-inline">
-                        <span class="message">📌 Вы были на позиции ${Math.round(parseInt(savedScroll) / 10)}% текста. Продолжить?</span>
-                        <div class="buttons">
-                            <button class="btn-start" id="scrollChoiceStartInline">С начала</button>
-                            <button class="btn-continue" id="scrollChoiceContinueInline">Продолжить</button>
-                        </div>
-                    </div>
-                `;
-                if (authorEl) {
-                    authorEl.insertAdjacentHTML('afterend', scrollChoiceHtml);
-                } else if (viewContent) {
-                    viewContent.insertAdjacentHTML('afterbegin', scrollChoiceHtml);
-                }
-
-                // Обработчики для кнопок
-                document.getElementById('scrollChoiceStartInline')?.addEventListener('click', () => {
-                    const choiceBlock = document.getElementById('scrollChoiceInline');
-                    if (choiceBlock) choiceBlock.remove();
-                    const bodyEl = document.querySelector('.view-body');
-                    if (bodyEl) {
-                        bodyEl.parentElement.scrollTop = 0;
+                // Открываем popup выбора
+                const choice = await openScrollChoicePopup();
+                console.log(`[Выбор] Пользователь выбрал: ${choice}`);
+                if (choice === 'continue') {
+                    // Восстанавливаем позицию
+                    if (modalBodyEl) {
+                        modalBodyEl.scrollTop = parseInt(savedScroll);
+                        console.log(`[Восстановление] Прокрутка к ${savedScroll}`);
+                    }
+                } else {
+                    // Начинаем с начала
+                    if (modalBodyEl) {
+                        modalBodyEl.scrollTop = 0;
                     }
                     localStorage.removeItem(`scrollPos_${id}`);
-                    console.log(`[Выбор] Начать с начала для конспекта ${id}`);
-                });
-
-                document.getElementById('scrollChoiceContinueInline')?.addEventListener('click', () => {
-                    const choiceBlock = document.getElementById('scrollChoiceInline');
-                    if (choiceBlock) choiceBlock.remove();
-                    const bodyEl = document.querySelector('.view-body');
-                    if (bodyEl) {
-                        bodyEl.parentElement.scrollTop = parseInt(savedScroll);
-                        console.log(`[Выбор] Продолжить с позиции ${savedScroll} для конспекта ${id}`);
-                    }
-                });
+                }
             }
 
-            setTimeout(() => {
-                applyTextSettings();
-            }, 50);
-
+            // Обработчики кнопок экспорта
             document.querySelector('.export-html')?.addEventListener('click', () => {
                 exportSingleHTML(item);
             });
@@ -1981,7 +2093,7 @@
         }
 
         // ======================================================================
-        // 16. ЭКСПОРТ
+        // 17. ЭКСПОРТ
         // ======================================================================
         function exportSingleHTML(item) {
             const html = `<!DOCTYPE html>
@@ -2036,7 +2148,7 @@
         }
 
         // ======================================================================
-        // 17. ПОДЕЛИТЬСЯ
+        // 18. ПОДЕЛИТЬСЯ
         // ======================================================================
         function shareConspect(item) {
             const plainText = stripHtml(item.content || '');
@@ -2059,7 +2171,7 @@
         }
 
         // ======================================================================
-        // 18. БЭКАП
+        // 19. БЭКАП
         // ======================================================================
         async function exportAllJSON() {
             const all = await getAllConspects();
@@ -2075,7 +2187,7 @@
         }
 
         // ======================================================================
-        // 19. ИМПОРТ JSON
+        // 20. ИМПОРТ JSON
         // ======================================================================
         async function importJSON(file) {
             try {
@@ -2196,7 +2308,7 @@
         }
 
         // ======================================================================
-        // 20. ТЁМНАЯ ТЕМА
+        // 21. ТЁМНАЯ ТЕМА
         // ======================================================================
         function toggleTheme() {
             document.body.classList.toggle('dark');
@@ -2213,7 +2325,7 @@
         }
 
         // ======================================================================
-        // 21. ОБНОВЛЕНИЕ ПО СВАЙПУ
+        // 22. ОБНОВЛЕНИЕ ПО СВАЙПУ
         // ======================================================================
         let touchStartY = 0;
         let isCheckingUpdate = false;
@@ -2270,7 +2382,7 @@
         }, { passive: true });
 
         // ======================================================================
-        // 22. УСТАНОВКА PWA
+        // 23. УСТАНОВКА PWA
         // ======================================================================
         let deferredPrompt;
 
@@ -2297,7 +2409,7 @@
         });
 
         // ======================================================================
-        // 23. УПРАВЛЕНИЕ POPUP (настройки)
+        // 24. УПРАВЛЕНИЕ POPUP (настройки)
         // ======================================================================
         const settingsPopup = document.getElementById('settingsPopup');
         const settingsPopupOverlay = document.getElementById('settingsPopupOverlay');
@@ -2329,7 +2441,7 @@
         settingsPopup.addEventListener('click', (e) => e.stopPropagation());
 
         // ======================================================================
-        // 24. УПРАВЛЕНИЕ POPUP (экспорт / поделиться) с MD
+        // 25. УПРАВЛЕНИЕ POPUP (экспорт / поделиться) с MD
         // ======================================================================
         const sharePopup = document.getElementById('sharePopup');
         const sharePopupOverlay = document.getElementById('sharePopupOverlay');
@@ -2409,7 +2521,7 @@
         sharePopup.addEventListener('click', (e) => e.stopPropagation());
 
         // ======================================================================
-        // 25. ИНИЦИАЛИЗАЦИЯ
+        // 26. ИНИЦИАЛИЗАЦИЯ
         // ======================================================================
         document.addEventListener('DOMContentLoaded', async () => {
             // Отключаем автоматическое восстановление прокрутки браузером
@@ -2460,7 +2572,7 @@
         });
 
         // ======================================================================
-        // 26. ИНСТРУКЦИЯ
+        // 27. ИНСТРУКЦИЯ
         // ======================================================================
         document.getElementById('instructionBtn').addEventListener('click', () => {
             document.getElementById('instructionModal').classList.add('active');
@@ -2480,7 +2592,7 @@
         });
 
         // ======================================================================
-        // 27. ПРОМПТ
+        // 28. ПРОМПТ
         // ======================================================================
         document.getElementById('promptBtn').addEventListener('click', () => {
             const promptText = `Книга: [ВСТАВЬТЕ НАЗВАНИЕ КНИГИ]
@@ -2539,7 +2651,7 @@
         }
 
         // ======================================================================
-        // 28. SERVICE WORKER
+        // 29. SERVICE WORKER
         // ======================================================================
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js', { scope: '/book-summary/' })
